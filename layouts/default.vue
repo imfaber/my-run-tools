@@ -1,5 +1,5 @@
 <template>
-    <v-app id="run-tools" dark>
+    <v-app v-show="ready" id="run-tools" light>
         <v-navigation-drawer
             v-model="drawer"
             :mini-variant="miniVariant"
@@ -145,7 +145,8 @@ export default {
                     value: '/pace-time-calculator'
                 }
             ],
-            miniVariant: false
+            miniVariant: false,
+            ready: false
         };
     },
     computed: {
@@ -153,8 +154,11 @@ export default {
             return this.$vuetify.breakpoint.mdAndDown;
         }
     },
-    created() {
-        this.$vuetify.theme.dark = false;
+    beforeCreate() {
+        setTimeout(() => {
+            this.$vuetify.theme.dark = false;
+            this.ready = true;
+        });
     }
 };
 </script>

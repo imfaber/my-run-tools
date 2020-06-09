@@ -1,7 +1,7 @@
 import colors from 'vuetify/es5/util/colors';
 
 export default {
-    mode: 'universal',
+    mode: 'spa',
     /*
      ** Headers of the page
      */
@@ -66,7 +66,6 @@ export default {
         customVariables: ['~/assets/variables.scss'],
         treeShake: true,
         theme: {
-            dark: true,
             options: {
                 customProperties: true
             },

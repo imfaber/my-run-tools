@@ -1,19 +1,21 @@
 <template>
     <div v-on-clickaway="onClickAway" class="time-picker">
         <v-text-field
+            ref="inputField"
             v-model="time"
             shaped
             solo
             :clear-icon="timeDefault !== time ? 'mdi-close-circle' : ''"
             clearable
-            :label="label"
+            :placeholder="placeholder"
             type="text"
             @click:clear.stop.prevent="onClear"
             @input="onInput"
-            @focus="isPickerActive = true"
+            @focus="onFocus"
+            @keyup.native.enter="onClickAway"
         ></v-text-field>
 
-        <div class="time-display">
+        <div class="time-display" @click="onFocus">
             <div class="time-display__value">
                 {{ timeDisplay }}
             </div>
@@ -27,7 +29,12 @@
             full-width
             format="24hr"
             @input="onPickerInput"
-        ></v-time-picker>
+        >
+            <v-spacer></v-spacer>
+            <v-btn fab dark small color="green" @click="onClickAway()">
+                <v-icon dark>mdi-check</v-icon>
+            </v-btn>
+        </v-time-picker>
     </div>
 </template>
 
@@ -41,9 +48,9 @@ export default {
     },
 
     props: {
-        label: {
+        placeholder: {
             type: String,
-            default: 'Time'
+            default: 'E.g. 5m, 1.5h, 1h 30m, 01:30:00 etc...'
         }
     },
 
@@ -95,6 +102,11 @@ export default {
         },
         onClickAway() {
             this.isPickerActive = false;
+            this.$refs.inputField.$el.querySelector('input').blur();
+        },
+        onFocus() {
+            this.isPickerActive = true;
+            this.$refs.inputField.$el.querySelector('input').select();
         }
     }
 };
@@ -121,6 +133,8 @@ export default {
         padding: 16px;
         color: white;
         background: var(--v-primary-base);
+        border-radius: 0 0 16px 16px;
+        cursor: pointer;
 
         .time-display__value {
             @extend %time-display-value;
@@ -134,8 +148,14 @@ export default {
         z-index: 1;
     }
 
+    .v-input input {
+        text-align: center;
+        padding-left: 24px;
+    }
+
     .v-input__slot {
         margin-bottom: 0;
+        cursor: pointer;
     }
 
     .v-time-picker-title {
@@ -156,6 +176,12 @@ export default {
         span {
             @extend %time-display-value;
         }
+    }
+
+    .v-picker__actions {
+        position: absolute;
+        bottom: 0;
+        right: 0;
     }
 }
 </style>
