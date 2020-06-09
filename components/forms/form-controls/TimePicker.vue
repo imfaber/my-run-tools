@@ -1,8 +1,9 @@
 <template>
-    <div v-on-clickaway="onClickAway">
+    <div v-on-clickaway="onClickAway" class="time-picker">
         <v-text-field
             v-model="time"
-            filled
+            shaped
+            solo
             :clear-icon="timeDefault !== time ? 'mdi-close-circle' : ''"
             clearable
             :label="label"
@@ -11,6 +12,12 @@
             @input="onInput"
             @focus="isPickerActive = true"
         ></v-text-field>
+
+        <div class="time-display">
+            <div class="time-display__value">
+                {{ timeDisplay }}
+            </div>
+        </div>
 
         <v-time-picker
             v-if="isPickerActive"
@@ -25,7 +32,8 @@
 </template>
 
 <script>
-import { directive as onClickaway } from 'vue-clickaway'
+import { directive as onClickaway } from 'vue-clickaway';
+import parseDuration from 'parse-duration';
 
 export default {
     directives: {
@@ -45,48 +53,109 @@ export default {
             timeDefault: '00:00:00',
             pickerTime: null,
             isPickerActive: false
+        };
+    },
+
+    computed: {
+        timeDisplay() {
+            return this.pickerTime !== this.timeDefault
+                ? this.pickerTime
+                : '-- : -- : --';
         }
     },
 
     created() {
-        this.onClear()
+        this.onClear();
     },
 
     methods: {
-        isValidTimeFormat() {
-            console.log(
-                /^([01]\d|2[0-3]):?([0-5]\d):?([0-5]\d)$/.test(this.time)
-            )
-            return /^([01]\d|2[0-3]):?([0-5]\d):?([0-5]\d)$/.test(this.time)
+        isValidTimeFormat(value) {
+            return /^([01]\d|2[0-3]):?([0-5]\d):?([0-5]\d)$/.test(value);
         },
         onInput(value) {
-            if (this.isValidTimeFormat()) {
-                this.pickerTime = this.time
+            if (!value) {
+                return;
             }
-            console.log('dd', value)
+
+            if (this.isValidTimeFormat(value)) {
+                this.pickerTime = value;
+            } else {
+                const date = new Date(parseDuration(value));
+                const parsedTimeString = date.toISOString().slice(11, 19);
+                this.pickerTime = parsedTimeString;
+            }
         },
         onPickerInput(value) {
-            console.log('www', value)
-            this.time = this.pickerTime
+            this.time = value;
         },
         async onClear() {
-            await this.$nextTick()
-            this.time = null
-            this.pickerTime = this.timeDefault
+            await this.$nextTick();
+            this.time = null;
+            this.pickerTime = this.timeDefault;
         },
         onClickAway() {
-            this.isPickerActive = false
+            this.isPickerActive = false;
+        }
+    }
+};
+</script>
+
+<style lang="scss" scoped>
+%time-display-value {
+    font-size: 40px;
+    height: 40px;
+    line-height: 40px;
+}
+
+.time-picker {
+    position: relative;
+
+    .v-picker {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        transform: translateY(-72px);
+    }
+
+    .time-display {
+        padding: 16px;
+        color: white;
+        background: var(--v-primary-base);
+
+        .time-display__value {
+            @extend %time-display-value;
         }
     }
 }
-</script>
 
-<style lang="scss">
-.v-picker__title__btn {
-    display: none;
-}
+::v-deep {
+    .v-text-field {
+        position: relative;
+        z-index: 1;
+    }
 
-.v-time-picker-title {
-    justify-content: center;
+    .v-input__slot {
+        margin-bottom: 0;
+    }
+
+    .v-time-picker-title {
+        justify-content: center;
+    }
+
+    .v-text-field__details {
+        display: none;
+    }
+
+    .v-picker__title {
+        box-shadow: inset 0px -2px 1px 0px rgba(0, 0, 0, 0.25);
+        background: var(--v-primary-base);
+    }
+
+    .v-time-picker-title__time {
+        .v-picker__title__btn,
+        span {
+            @extend %time-display-value;
+        }
+    }
 }
 </style>

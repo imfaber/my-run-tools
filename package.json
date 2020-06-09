@@ -17,6 +17,7 @@
     "@nuxtjs/dotenv": "^1.4.0",
     "@nuxtjs/pwa": "^3.0.0-0",
     "nuxt": "^2.0.0",
+    "parse-duration": "^0.4.4",
     "vue-clickaway": "^2.2.2"
   },
   "devDependencies": {

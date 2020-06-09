@@ -84,15 +84,13 @@
 
             <v-spacer />
 
-            <div class="text-right" style="width: 145px;">
-                <a
-                    href="https://github.com/imfaber/run-tools"
-                    target="_blank"
-                    class="navbar-link"
-                >
-                    <v-icon color="white" large>mdi-github</v-icon>
-                </a>
-            </div>
+            <a
+                href="https://github.com/imfaber/run-tools"
+                target="_blank"
+                class="navbar-link"
+            >
+                <v-icon color="white" large>mdi-github</v-icon>
+            </a>
         </v-app-bar>
 
         <v-content>
@@ -100,14 +98,14 @@
                 <div class="jump-to d-flex justify-center">
                     <v-autocomplete
                         :items="toolItems"
-                        solo-inverted
                         hide-details
                         label="Go to tool"
                         class="hidden-sm-and-down lighten-4"
-                        :dense="isSmallScreen"
                         clearable
                         cache-items
                         single-line
+                        color="blue-grey lighten-2"
+                        solo
                     />
                 </div>
                 <nuxt />
@@ -148,17 +146,17 @@ export default {
                 }
             ],
             miniVariant: false
-        }
+        };
     },
     computed: {
         isSmallScreen() {
-            return this.$vuetify.breakpoint.mdAndDown
+            return this.$vuetify.breakpoint.mdAndDown;
         }
     },
     created() {
-        this.$vuetify.theme.dark = true
+        this.$vuetify.theme.dark = false;
     }
-}
+};
 </script>
 
 <style lang="scss">

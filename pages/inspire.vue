@@ -7,11 +7,11 @@
 </template>
 
 <script>
-import TimePicker from '~/components/forms/form-controls/TimePicker'
+import TimePicker from '~/components/forms/form-controls/TimePicker';
 
 export default {
     components: {
         TimePicker
     }
-}
+};
 </script>

@@ -1,4 +1,4 @@
-import colors from 'vuetify/es5/util/colors'
+import colors from 'vuetify/es5/util/colors';
 
 export default {
     mode: 'universal',
@@ -64,6 +64,7 @@ export default {
      */
     vuetify: {
         customVariables: ['~/assets/variables.scss'],
+        treeShake: true,
         theme: {
             dark: true,
             options: {
@@ -71,13 +72,13 @@ export default {
             },
             themes: {
                 dark: {
-                    primary: '#2196F3',
+                    primary: '#363636',
                     accent: colors.grey.darken3,
                     secondary: colors.amber.darken3,
                     info: colors.teal.lighten1,
                     warning: colors.amber.base,
                     error: colors.deepOrange.accent4,
-                    success: colors.green.accent3,
+                    success: colors.green.accent3
                 },
                 light: {
                     primary: '#2196F3',
@@ -86,7 +87,7 @@ export default {
                     info: colors.teal.lighten1,
                     warning: colors.amber.base,
                     error: colors.deepOrange.accent4,
-                    success: colors.green.accent3,
+                    success: colors.green.accent3
                 }
             }
         }
@@ -100,4 +101,4 @@ export default {
          */
         extend(config, ctx) {}
     }
-}
+};
