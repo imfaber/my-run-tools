@@ -2,7 +2,7 @@
     <v-app v-show="ready" id="run-tools" light>
         <v-navigation-drawer
             v-model="drawer"
-            :mini-variant="miniVariant"
+            :mini-variant="$store.state.settings.compactNavPanel"
             :clipped="true"
             app
         >
@@ -22,6 +22,8 @@
                     </v-list-item-content>
                 </v-list-item>
             </v-list>
+
+            <v-divider></v-divider>
 
             <v-list class="pt-0 pb-0">
                 <v-list-item
@@ -44,7 +46,9 @@
             </v-list>
 
             <template v-slot:append>
-                <v-list-item link>
+                <v-divider></v-divider>
+
+                <v-list-item link @click="settingsDialog = true">
                     <v-list-item-action>
                         <v-icon color="white">mdi-cog</v-icon>
                     </v-list-item-action>
@@ -55,26 +59,16 @@
                     </v-list-item-content>
                 </v-list-item>
 
-                <v-divider></v-divider>
-
-                <v-list-item link @click.stop="miniVariant = !miniVariant">
-                    <v-list-item-action>
-                        <v-icon color="white"
-                            >mdi-{{
-                                `chevron-${miniVariant ? 'right' : 'left'}`
-                            }}</v-icon
-                        >
-                    </v-list-item-action>
-                    <v-list-item-content>
-                        <v-list-item-title class="white--text"
-                            >Minify</v-list-item-title
-                        >
-                    </v-list-item-content>
-                </v-list-item>
+                <form-settings-dialog
+                    v-model="settingsDialog"
+                    persistent
+                    max-width="350px"
+                    @close="closeSettingsDialog"
+                ></form-settings-dialog>
             </template>
         </v-navigation-drawer>
 
-        <v-app-bar :clipped-left="true" fixed app :dense="isSmallScreen">
+        <v-app-bar :clipped-left="true" app :dense="isSmallScreen">
             <v-app-bar-nav-icon color="white" @click.stop="drawer = !drawer" />
             <v-toolbar-title class="align-center">
                 <n-link to="/" class="title white--text navbar-link">
@@ -119,7 +113,10 @@
 </template>
 
 <script>
+import FormSettingsDialog from '~/components/forms/FormSettingsDialog';
+
 export default {
+    components: { FormSettingsDialog },
     data() {
         return {
             drawer: !this.$vuetify.breakpoint.mdAndDown,
@@ -145,8 +142,8 @@ export default {
                     value: '/pace-time-calculator'
                 }
             ],
-            miniVariant: false,
-            ready: false
+            ready: false,
+            settingsDialog: false
         };
     },
     computed: {
@@ -156,9 +153,14 @@ export default {
     },
     beforeCreate() {
         setTimeout(() => {
-            this.$vuetify.theme.dark = false;
+            this.$vuetify.theme.dark = this.$store.state.settings.darkTheme;
             this.ready = true;
         });
+    },
+    methods: {
+        closeSettingsDialog() {
+            this.settingsDialog = false;
+        }
     }
 };
 </script>
@@ -171,5 +173,25 @@ export default {
 .jump-to {
     max-width: 600px;
     margin: 1em auto;
+}
+
+.v-text-field {
+    position: relative;
+    z-index: 1;
+}
+
+div.v-autocomplete__content.v-menu__content {
+    transform: translateY(-5px);
+    box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2),
+        0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 5px 5px 0px rgba(0, 0, 0, 0.12);
+    border-radius: 0 0 16px 16px;
+
+    .v-list {
+        border-radius: 0;
+    }
+}
+
+header.v-app-bar.v-app-bar--fixed {
+    z-index: 1;
 }
 </style>

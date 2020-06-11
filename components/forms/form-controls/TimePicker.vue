@@ -5,21 +5,18 @@
             v-model="time"
             shaped
             solo
-            :clear-icon="timeDefault !== time ? 'mdi-close-circle' : ''"
+            :clear-icon="timeDefault !== time ? 'mdi-close' : ''"
             clearable
             :placeholder="placeholder"
             type="text"
+            autocomplete="off"
             @click:clear.stop.prevent="onClear"
             @input="onInput"
             @focus="onFocus"
             @keyup.native.enter="onClickAway"
         ></v-text-field>
 
-        <div class="time-display" @click="onFocus">
-            <div class="time-display__value">
-                {{ timeDisplay }}
-            </div>
-        </div>
+        <value-display :value="timeDisplay" @click="onFocus"></value-display>
 
         <v-time-picker
             v-if="isPickerActive"
@@ -31,7 +28,7 @@
             @input="onPickerInput"
         >
             <v-spacer></v-spacer>
-            <v-btn fab dark small color="green" @click="onClickAway()">
+            <v-btn fab dark x-small color="primary" @click="onClickAway()">
                 <v-icon dark>mdi-check</v-icon>
             </v-btn>
         </v-time-picker>
@@ -41,8 +38,11 @@
 <script>
 import { directive as onClickaway } from 'vue-clickaway';
 import parseDuration from 'parse-duration';
+import ValueDisplay from './ValueDisplay';
 
 export default {
+    components: { ValueDisplay },
+
     directives: {
         onClickaway
     },
@@ -50,7 +50,7 @@ export default {
     props: {
         placeholder: {
             type: String,
-            default: 'E.g. 5m, 1.5h, 1h 30m, 01:30:00 etc...'
+            default: 'Enter time'
         }
     },
 
@@ -146,11 +146,6 @@ export default {
     .v-text-field {
         position: relative;
         z-index: 1;
-    }
-
-    .v-input input {
-        text-align: center;
-        padding-left: 24px;
     }
 
     .v-input__slot {
