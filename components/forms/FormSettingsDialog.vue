@@ -63,7 +63,7 @@ export default {
             valid: false,
             settings: this.$store.state.settings,
             metricSystem: UNIT_SYSTEM_METRIC,
-            imperialSystem: UNIT_SYSTEM_IMPERIAL,
+            imperialSystem: UNIT_SYSTEM_IMPERIAL
         };
     },
     computed: {
