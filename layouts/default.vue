@@ -88,8 +88,8 @@
         </v-app-bar>
 
         <v-content>
-            <v-container>
-                <div class="jump-to d-flex justify-center">
+            <v-container class="main-container py-12" fluid>
+                <!-- <div class="jump-to d-flex justify-center">
                     <v-autocomplete
                         :items="toolItems"
                         hide-details
@@ -101,7 +101,7 @@
                         color="blue-grey lighten-2"
                         solo
                     />
-                </div>
+                </div> -->
                 <nuxt />
             </v-container>
         </v-content>
@@ -132,16 +132,6 @@ export default {
                     to: '/inspire'
                 }
             ],
-            toolItems: [
-                {
-                    text: 'Pace/Time calculator',
-                    value: '/pace-time-calculator'
-                },
-                {
-                    text: 'Other tool',
-                    value: '/pace-time-calculator'
-                }
-            ],
             ready: false,
             settingsDialog: false
         };
@@ -168,6 +158,11 @@ export default {
 <style lang="scss">
 .navbar-link {
     text-decoration: none;
+}
+
+.main-container {
+    align-items: center;
+    display: flex;
 }
 
 .jump-to {

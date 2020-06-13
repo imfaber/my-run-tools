@@ -1,70 +1,73 @@
 <template>
     <div class="distance-picker">
-        <v-autocomplete
-            ref="inputField"
-            v-model="distance"
-            :items="distancesList"
-            color="blue-grey lighten-2"
-            placeholder="Select distance"
-            item-value="id"
-            item-text="name"
-            no-data-text="Distance not available"
-            append-icon=""
-            :search-input.sync="searchInput"
-            shaped
-            solo
-            clearable
-            open-on-clear
-            @keyup.native.enter="onEnter"
-        >
-            <template v-slot:prepend-item>
-                <v-list-item-content class="pt-0 pb-0">
-                    <v-list-item-title>
-                        <v-btn
-                            class="ma-2"
-                            text
-                            small
-                            color="primary"
-                            @click="openCustomDistanceDialog"
-                        >
-                            <v-icon left>mdi-plus</v-icon> Add custom distance
-                        </v-btn>
-                    </v-list-item-title>
-                </v-list-item-content>
-            </template>
+        <v-scroll-y-transition>
+            <v-autocomplete
+                ref="inputField"
+                v-model="distance"
+                :items="distancesList"
+                color="blue-grey lighten-2"
+                placeholder="Select distance"
+                item-value="id"
+                item-text="name"
+                no-data-text="Distance not available"
+                append-icon=""
+                :search-input.sync="searchInput"
+                shaped
+                solo
+                clearable
+                @keyup.native.enter="onEnter"
+                @change="onChange"
+            >
+                <template v-slot:prepend-item>
+                    <v-list-item-content class="pt-0 pb-0">
+                        <v-list-item-title>
+                            <v-btn
+                                class="ma-2"
+                                text
+                                small
+                                color="primary"
+                                @click="openCustomDistanceDialog"
+                            >
+                                <v-icon left>mdi-plus</v-icon> Add custom
+                                distance
+                            </v-btn>
+                        </v-list-item-title>
+                    </v-list-item-content>
+                </template>
 
-            <template v-slot:item="{ item }">
-                <v-list-item-content>
-                    <v-list-item-title>
-                        {{ item.name }}
-                    </v-list-item-title>
-                </v-list-item-content>
-                <v-list-item-action v-if="item.isCustom">
-                    <div class="d-flex">
-                        <v-btn
-                            icon
-                            small
-                            color="primary"
-                            @click.stop.prevent="editDistance(item)"
-                        >
-                            <v-icon>mdi-pencil</v-icon>
-                        </v-btn>
-                        <v-btn
-                            icon
-                            small
-                            color="red"
-                            @click.stop.prevent="
-                                confirmDeletion = true;
-                                distanceToDelete = item.id;
-                                closeAutocompleteMenu();
-                            "
-                        >
-                            <v-icon>mdi-delete</v-icon>
-                        </v-btn>
-                    </div>
-                </v-list-item-action>
-            </template>
-        </v-autocomplete>
+                <template v-slot:item="{ item }">
+                    <v-list-item-content>
+                        <v-list-item-title>
+                            {{ item.name }}
+                        </v-list-item-title>
+                    </v-list-item-content>
+                    <v-list-item-action v-if="item.isCustom">
+                        <div class="d-flex">
+                            <v-btn
+                                icon
+                                small
+                                color="primary"
+                                @click.stop.prevent="editDistance(item)"
+                            >
+                                <v-icon>mdi-pencil</v-icon>
+                            </v-btn>
+                            <v-btn
+                                icon
+                                small
+                                color="red"
+                                @click.stop.prevent="
+                                    confirmDeletion = true;
+                                    distanceToDelete = item.id;
+                                    closeAutocompleteMenu();
+                                "
+                            >
+                                <v-icon>mdi-delete</v-icon>
+                            </v-btn>
+                        </div>
+                    </v-list-item-action>
+                </template>
+            </v-autocomplete>
+        </v-scroll-y-transition>
 
         <value-display
             :value="distanceDisplay"
@@ -140,14 +143,18 @@ import { mapGetters, mapState, mapMutations } from 'vuex';
 import parseUnit from 'parse-unit';
 import FormCustomDistanceDialog from '../FormCustomDistanceDialog';
 import ValueDisplay from './ValueDisplay';
-import {
-    UNIT_SYSTEM_METRIC,
-    UNIT_SYSTEM_MEASURE_LENGTH,
-    isValidUnit
-} from '~/utils/unit-system';
+import { UNIT_SYSTEM_MEASURE_LENGTH, isValidUnit } from '~/utils/unit-system';
 
 export default {
     components: { ValueDisplay, FormCustomDistanceDialog },
+
+    props: {
+        value: {
+            type: String,
+            default: ''
+        }
+    },
+
     data() {
         return {
             distance: '',
@@ -164,20 +171,13 @@ export default {
 
     computed: {
         ...mapState({
-            settingUnitSystem: (state) => state.settings.unitSystem
+            settingUnitSystem: (state) => state.settings.unitSystem,
+            distancesList: (state) => state.runningEvent.events
         }),
 
         ...mapGetters('runningEvent', {
-            getMetricDistances: 'getMetricEvents',
-            getImperialDistances: 'getImperialEvents',
             getDistanceById: 'getEventById'
         }),
-
-        distancesList() {
-            return this.settingUnitSystem === UNIT_SYSTEM_METRIC
-                ? this.getMetricDistances
-                : this.getImperialDistances;
-        },
 
         distanceDisplay() {
             const distance = this.getDistanceById(this.distance);
@@ -187,6 +187,12 @@ export default {
             }
 
             return '...';
+        }
+    },
+
+    watch: {
+        value(value) {
+            this.distance = value;
         }
     },
 
@@ -245,7 +251,15 @@ export default {
                         isEdit ? 'updated' : 'added'
                     }!`
                 );
+
+                this.onChange();
             }
+        },
+
+        onChange() {
+            setTimeout(() => {
+                this.$emit('change', this.distance);
+            });
         },
 
         editDistance(distance) {
@@ -271,6 +285,8 @@ export default {
             this.showSuccessSnackBar(
                 `Distance <strong>${name}</strong> has been deleted!`
             );
+
+            this.onChange();
         },
 
         showSuccessSnackBar(message) {

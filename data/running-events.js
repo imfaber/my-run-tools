@@ -78,18 +78,6 @@ export default [
         unit: UNIT_SYSTEM_METER_ABBR
     },
     {
-        id: 'marathon-miles',
-        name: 'Marathon',
-        value: 26.2,
-        unit: UNIT_SYSTEM_MILE_ABBR
-    },
-    {
-        id: 'half-marathon-miles',
-        name: 'Half marathon',
-        value: 13.1,
-        unit: UNIT_SYSTEM_MILE_ABBR
-    },
-    {
         id: '20mi',
         name: '20 miles',
         value: 20,

@@ -1,7 +1,7 @@
 <template>
-    <div class="value-display" @click="onClick">
+    <div class="value-display text-center" @click="onClick">
         <div class="value-display__value">
-            {{ value }}
+            {{ value }} <small v-if="suffix">{{ suffix }}</small>
         </div>
     </div>
 </template>
@@ -10,6 +10,10 @@
 export default {
     props: {
         value: {
+            type: String,
+            default: ''
+        },
+        suffix: {
             type: String,
             default: ''
         }
@@ -35,6 +39,10 @@ export default {
         font-size: 40px;
         height: 40px;
         line-height: 40px;
+    }
+
+    small {
+        font-size: 50%;
     }
 }
 </style>
