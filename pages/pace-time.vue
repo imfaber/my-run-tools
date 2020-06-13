@@ -15,7 +15,7 @@
         </v-col>
 
         <v-col cols="12" md="1" class="text-center">
-            <v-icon class="mt-12" large>mdi-equal</v-icon>
+            <v-icon class="mt-md-12" large>mdi-equal</v-icon>
         </v-col>
 
         <v-col cols="12" md="3">
@@ -30,7 +30,7 @@
         </v-col>
 
         <v-col cols="12" md="1" class="text-center">
-            <v-icon class="mt-12" large>mdi-arrow-left-right</v-icon>
+            <v-icon class="mt-md-12" large>mdi-arrow-left-right</v-icon>
         </v-col>
 
         <v-col cols="12" md="3">
@@ -47,11 +47,11 @@
 </template>
 
 <script>
+import convert from 'convert-units';
 import TimePicker from '~/components/forms/form-controls/TimePicker';
 import DistancePicker from '~/components/forms/form-controls/DistancePicker';
 import { stringToMinutes, minsToDuration } from '~/utils/duration.ts';
 import { UNIT_SYSTEM_METRIC } from '~/utils/unit-system';
-import convert from 'convert-units';
 
 export default {
     components: {
@@ -104,6 +104,8 @@ export default {
 
     methods: {
         onDistanceChange(value) {
+            this.distanceInput = value;
+
             if (!value) {
                 if (!this.timeInput) {
                     this.timeDisplay = this.defaultTime;
@@ -116,7 +118,6 @@ export default {
                 return;
             }
 
-            this.distanceInput = value;
             this.calc();
         },
 
