@@ -25,6 +25,8 @@
     },
     "types": [
       "@types/node",
+      "@types/convert-units",
+      "@types/jest",
       "@nuxt/types",
       "@nuxtjs/vuetify"
     ]

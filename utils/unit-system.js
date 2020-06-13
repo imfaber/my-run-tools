@@ -44,7 +44,7 @@ export const UNIT_SYSTEM_LENGTH_IMPERIAL_UNITS = Object.freeze([
     UNIT_SYSTEM_YARD_ABBR
 ]);
 
-export function getUnits(measure = null, system = null) {
+export function getUnits(measure, system = null) {
     const list = convert()
         .list(measure)
         .filter((l) => isValidUnit(measure, l.abbr));
