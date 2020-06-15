@@ -26,7 +26,7 @@
             @click="onFocus"
         ></value-display>
 
-        <v-scroll-y-transition>
+        <v-fade-transition>
             <v-time-picker
                 v-if="isPickerActive"
                 ref="picker"
@@ -42,7 +42,7 @@
                     <v-icon dark>mdi-check</v-icon>
                 </v-btn>
             </v-time-picker>
-        </v-scroll-y-transition>
+        </v-fade-transition>
     </div>
 </template>
 
@@ -164,10 +164,9 @@ export default {
             this.computedInputValue = this.newDisplayValue;
         },
 
-        async onClear() {
-            await this.$nextTick();
+        onClear() {
             this.computedInputValue = null;
-            this.onClickAway();
+            this.$emit('clear', this.computedPickerValue);
         },
 
         onClickAway() {
@@ -215,7 +214,7 @@ export default {
         position: absolute;
         top: 100%;
         left: 0;
-        transform: translateY(-72px);
+        margin-top: -72px;
         z-index: 2;
     }
 
@@ -260,7 +259,8 @@ export default {
         }
 
         .v-picker__title {
-            box-shadow: inset 0px -2px 1px 0px rgba(0, 0, 0, 0.25);
+            box-shadow: inset 0px -2px 1px 0px rgba(0, 0, 0, 0.25),
+                inset 0px 2px 2px 0px rgba(0, 0, 0, 0.25);
             background: var(--v-primary-base);
         }
 

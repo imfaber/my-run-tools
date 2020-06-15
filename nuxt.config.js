@@ -1,13 +1,15 @@
 import colors from 'vuetify/es5/util/colors';
 
+const title = 'Run Tools';
+
 export default {
-    mode: 'spa',
+    mode: 'universal',
     /*
      ** Headers of the page
      */
     head: {
-        titleTemplate: '%s - ' + process.env.npm_package_name,
-        title: process.env.npm_package_name || '',
+        titleTemplate: `%s - ${title}`,
+        title,
         meta: [
             { charset: 'utf-8' },
             {
@@ -99,5 +101,8 @@ export default {
          ** You can extend webpack config here
          */
         extend(config, ctx) {}
+    },
+    router: {
+        middleware: []
     }
 };

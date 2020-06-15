@@ -31,7 +31,6 @@
                     :key="i"
                     :to="item.to"
                     router
-                    exact
                 >
                     <v-list-item-action>
                         <v-icon color="white">{{ item.icon }}</v-icon>
@@ -72,7 +71,7 @@
             <v-app-bar-nav-icon color="white" @click.stop="drawer = !drawer" />
             <v-toolbar-title class="align-center">
                 <n-link to="/" class="title white--text navbar-link">
-                    Run <span class="font-weight-light">Tools</span>
+                    Run<span class="font-weight-light">Tools</span>
                 </n-link>
             </v-toolbar-title>
 
@@ -89,31 +88,23 @@
 
         <v-content>
             <v-container class="main-container py-12" fluid>
-                <!-- <div class="jump-to d-flex justify-center">
-                    <v-autocomplete
-                        :items="toolItems"
-                        hide-details
-                        label="Go to tool"
-                        class="hidden-sm-and-down lighten-4"
-                        clearable
-                        cache-items
-                        single-line
-                        color="blue-grey lighten-2"
-                        solo
-                    />
-                </div> -->
                 <nuxt />
             </v-container>
         </v-content>
 
-        <div class="text-center">
-            <span>&copy; {{ new Date().getFullYear() }}</span>
+        <div class="text-center copy">
+            <small
+                >&copy; {{ new Date().getFullYear() }} - Made with ❤ by Fabrizio
+                Meinero -
+                <a href="https://imfaber.me/" target="_blank">Imfaber</a></small
+            >
         </div>
     </v-app>
 </template>
 
 <script>
 import FormSettingsDialog from '~/components/forms/FormSettingsDialog';
+import tools from '~/data/tools';
 
 export default {
     components: { FormSettingsDialog },
@@ -124,12 +115,12 @@ export default {
                 {
                     icon: 'mdi-run-fast',
                     title: 'Tools',
-                    to: '/'
+                    to: '/tools'
                 },
                 {
                     icon: 'mdi-information',
                     title: 'About',
-                    to: '/inspire'
+                    to: '/about'
                 }
             ],
             ready: false,
@@ -147,6 +138,19 @@ export default {
             this.ready = true;
         });
     },
+    mounted() {
+        const toolItems = this.$router.options.routes
+            .find((x) => x.name === 'tools')
+            .children.map((r) => ({
+                title: tools.find((t) => r.name === t.name).title,
+                routeName: r.name
+            }));
+
+        setTimeout(() => {
+            this.$store.commit('tool/setList', toolItems);
+        });
+    },
+
     methods: {
         closeSettingsDialog() {
             this.settingsDialog = false;
@@ -160,11 +164,6 @@ export default {
     text-decoration: none;
 }
 
-.main-container {
-    align-items: center;
-    display: flex;
-}
-
 .jump-to {
     max-width: 600px;
     margin: 1em auto;
@@ -176,17 +175,25 @@ export default {
 }
 
 div.v-autocomplete__content.v-menu__content {
-    transform: translateY(-5px);
+    margin-top: -5px;
     box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2),
         0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 5px 5px 0px rgba(0, 0, 0, 0.12);
-    border-radius: 0 0 16px 16px;
+    border-radius: 0 0 28px 28px;
+    padding-top: 5px;
+    background: white;
 
     .v-list {
         border-radius: 0;
+        padding: 0;
+
+        .v-list-item__content {
+            padding-left: 8px;
+            padding-right: 8px;
+        }
     }
 }
 
 header.v-app-bar.v-app-bar--fixed {
-    z-index: 1;
+    z-index: 10;
 }
 </style>

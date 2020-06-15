@@ -1,7 +1,7 @@
 {
   "name": "run-tools",
   "version": "1.0.0",
-  "description": "Running tools",
+  "description": "Calculators and converters for runners.",
   "author": "Fabrizio Meinero",
   "private": true,
   "scripts": {

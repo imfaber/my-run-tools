@@ -26,6 +26,7 @@
                 placeholder="Enter time"
                 use-hours
                 @change="calcPace"
+                @clear="onTimeClear"
             ></time-picker>
         </v-col>
 
@@ -41,6 +42,7 @@
                 placeholder="Enter pace"
                 :display-value-suffix="paceSuffix"
                 @change="calcTime"
+                @clear="onPaceClear"
             ></time-picker>
         </v-col>
     </v-row>
@@ -52,12 +54,15 @@ import TimePicker from '~/components/forms/form-controls/TimePicker';
 import DistancePicker from '~/components/forms/form-controls/DistancePicker';
 import { stringToMinutes, minsToDuration } from '~/utils/duration.ts';
 import { UNIT_SYSTEM_METRIC } from '~/utils/unit-system';
+import ToolMixin from '~/mixins/tool';
 
 export default {
     components: {
         TimePicker,
         DistancePicker
     },
+
+    mixins: [ToolMixin],
 
     data() {
         return {
@@ -109,16 +114,30 @@ export default {
             if (!value) {
                 if (!this.timeInput) {
                     this.timeDisplay = this.defaultTime;
+                    this.timePicker = null;
                 }
 
                 if (!this.paceInput) {
                     this.paceDisplay = this.defaultPace;
+                    this.pacePicker = null;
                 }
 
                 return;
             }
 
             this.calc();
+        },
+
+        onTimeClear() {
+            this.timeInput = null;
+            this.pacePicker = null;
+            this.paceDisplay = this.defaultPace;
+        },
+
+        onPaceClear() {
+            this.paceInput = null;
+            this.timePicker = null;
+            this.timeDisplay = this.defaultTime;
         },
 
         calc() {
