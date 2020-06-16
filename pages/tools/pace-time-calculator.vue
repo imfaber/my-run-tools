@@ -21,7 +21,7 @@
         <v-col cols="12" md="3">
             <h2 class="font-weight-regular mb-4 text-center">Time</h2>
             <time-picker
-                :picker-value="timePicker"
+                ref="timePicker"
                 :display-value="timeDisplay"
                 placeholder="Enter time"
                 use-hours
@@ -37,7 +37,7 @@
         <v-col cols="12" md="3">
             <h2 class="font-weight-regular mb-4 text-center">Pace</h2>
             <time-picker
-                :picker-value="pacePicker"
+                ref="pacePicker"
                 :display-value="paceDisplay"
                 placeholder="Enter pace"
                 :display-value-suffix="paceSuffix"
@@ -53,7 +53,6 @@ import convert from 'convert-units';
 import TimePicker from '~/components/forms/form-controls/TimePicker';
 import DistancePicker from '~/components/forms/form-controls/DistancePicker';
 import { stringToMinutes, minsToDuration } from '~/utils/duration.ts';
-import { UNIT_SYSTEM_METRIC } from '~/utils/unit-system';
 import ToolMixin from '~/mixins/tool';
 
 export default {
@@ -68,28 +67,18 @@ export default {
         return {
             defaultTime: '00:00:00',
             defaultPace: '00:00',
-            distanceInput: null,
+            distance: null,
             timeDisplay: null,
-            timePicker: null,
             timeInput: null,
             paceDisplay: null,
-            pacePicker: null,
             paceInput: null
         };
     },
 
     computed: {
-        unitSystem() {
-            return this.$store.state.settings.unitSystem;
-        },
-
-        isMetricSystem() {
-            return this.unitSystem === UNIT_SYSTEM_METRIC;
-        },
-
         distanceValue() {
             const distance = this.$store.getters['runningEvent/getEventById'](
-                this.distanceInput
+                this.distance
             );
 
             if (!distance) {
@@ -109,17 +98,17 @@ export default {
 
     methods: {
         onDistanceChange(value) {
-            this.distanceInput = value;
+            this.distance = value;
 
             if (!value) {
                 if (!this.timeInput) {
                     this.timeDisplay = this.defaultTime;
-                    this.timePicker = null;
+                    this.timeInput = null;
                 }
 
                 if (!this.paceInput) {
                     this.paceDisplay = this.defaultPace;
-                    this.pacePicker = null;
+                    this.paceInput = null;
                 }
 
                 return;
@@ -130,18 +119,18 @@ export default {
 
         onTimeClear() {
             this.timeInput = null;
-            this.pacePicker = null;
+            this.paceInput = null;
             this.paceDisplay = this.defaultPace;
         },
 
         onPaceClear() {
             this.paceInput = null;
-            this.timePicker = null;
+            this.timeInput = null;
             this.timeDisplay = this.defaultTime;
         },
 
         calc() {
-            if (!this.distanceInput) {
+            if (!this.distance) {
                 return;
             }
 
@@ -155,10 +144,11 @@ export default {
         },
 
         calcPace(time) {
-            this.paceInput = null;
+            this.$refs.pacePicker.clearInputValue();
             this.timeInput = time;
+            this.paceInput = null;
 
-            if (!this.distanceInput || !time || time === this.defaultTime) {
+            if (!this.distance || !time || time === this.defaultTime) {
                 return;
             }
 
@@ -166,14 +156,14 @@ export default {
             const pace = timeInMins / this.distanceValue;
             const duration = minsToDuration(pace);
             this.paceDisplay = duration || this.defaultPace;
-            this.pacePicker = duration || this.defaultPace;
         },
 
         calcTime(pace) {
+            this.$refs.timePicker.clearInputValue();
             this.timeInput = null;
             this.paceInput = pace;
 
-            if (!this.distanceInput || !pace || pace === this.defaultPace) {
+            if (!this.distance || !pace || pace === this.defaultPace) {
                 return;
             }
 
@@ -181,7 +171,6 @@ export default {
             const time = paceInMins * this.distanceValue;
             const duration = minsToDuration(time);
             this.timeDisplay = duration || this.defaultTime;
-            this.timePicker = duration || this.defaultTime;
         }
     }
 };

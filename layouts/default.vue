@@ -90,15 +90,17 @@
             <v-container class="main-container py-12" fluid>
                 <nuxt />
             </v-container>
-        </v-content>
 
-        <div class="text-center copy">
-            <small
-                >&copy; {{ new Date().getFullYear() }} - Made with ❤ by Fabrizio
-                Meinero -
-                <a href="https://imfaber.me/" target="_blank">Imfaber</a></small
-            >
-        </div>
+            <div class="text-center copy">
+                <small
+                    >&copy; {{ new Date().getFullYear() }} - Made with ❤ by
+                    Fabrizio Meinero -
+                    <a href="https://imfaber.me/" target="_blank"
+                        >Imfaber</a
+                    ></small
+                >
+            </div>
+        </v-content>
     </v-app>
 </template>
 
@@ -143,11 +145,15 @@ export default {
             .find((x) => x.name === 'tools')
             .children.map((r) => ({
                 title: tools.find((t) => r.name === t.name).title,
-                routeName: r.name
+                routeName: r.name,
+                order: tools.findIndex((t) => r.name === t.name)
             }));
 
         setTimeout(() => {
-            this.$store.commit('tool/setList', toolItems);
+            this.$store.commit(
+                'tool/setList',
+                toolItems.sort((a, b) => (a.weight > b.weight ? 1 : -1))
+            );
         });
     },
 
@@ -175,11 +181,11 @@ export default {
 }
 
 div.v-autocomplete__content.v-menu__content {
-    margin-top: -5px;
+    margin-top: -7px;
     box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2),
         0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 5px 5px 0px rgba(0, 0, 0, 0.12);
-    border-radius: 0 0 28px 28px;
-    padding-top: 5px;
+    border-radius: 5px 8px 28px 28px;
+    padding-top: 7px;
     background: white;
 
     .v-list {
@@ -195,5 +201,13 @@ div.v-autocomplete__content.v-menu__content {
 
 header.v-app-bar.v-app-bar--fixed {
     z-index: 10;
+}
+
+.copy {
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
 }
 </style>

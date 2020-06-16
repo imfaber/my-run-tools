@@ -3,7 +3,8 @@ import {
     durationToString,
     formatDurationString,
     stringToMinutes,
-    minsToDuration
+    minsToDuration,
+    isValidDurationString
 } from '~/utils/duration.ts';
 
 describe('Duration utils', () => {
@@ -37,6 +38,16 @@ describe('Duration utils', () => {
 
     test('minsToDuration() converts minutes in a duration string', () => {
         expect(minsToDuration(65)).toEqual('01:05:00');
+    });
+
+    test('isValidDurationString() should determine whether the string is a valid duration string', () => {
+        expect(isValidDurationString('90m')).toBeTruthy();
+        expect(isValidDurationString('50m 30s')).toBeTruthy();
+        expect(isValidDurationString('00:50:10')).toBeTruthy();
+        expect(isValidDurationString('00:50:10')).toBeTruthy();
+        expect(isValidDurationString('50')).toBeFalsy();
+        expect(isValidDurationString('500:05:06')).toBeFalsy();
+        expect(isValidDurationString('70:05:06')).toBeFalsy();
     });
 
     test('durationToString() returns the formatted duration', () => {

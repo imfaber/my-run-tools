@@ -1,73 +1,70 @@
 <template>
     <div class="distance-picker">
-        <v-scroll-y-transition>
-            <v-autocomplete
-                ref="inputField"
-                v-model="distance"
-                :items="distancesList"
-                color="blue-grey lighten-2"
-                placeholder="Select distance"
-                item-value="id"
-                item-text="name"
-                no-data-text="Distance not available"
-                append-icon=""
-                :search-input.sync="searchInput"
-                shaped
-                solo
-                clearable
-                @keyup.native.enter="onEnter"
-                @change="onChange"
-            >
-                <template v-slot:prepend-item>
-                    <v-list-item-content class="pt-0 pb-0">
-                        <v-list-item-title>
-                            <v-btn
-                                class="ma-2"
-                                text
-                                small
-                                color="primary"
-                                @click="openCustomDistanceDialog"
-                            >
-                                <v-icon left>mdi-plus</v-icon> Add custom
-                                distance
-                            </v-btn>
-                        </v-list-item-title>
-                    </v-list-item-content>
-                </template>
+        <v-autocomplete
+            ref="inputField"
+            v-model="distance"
+            :items="distancesList"
+            color="blue-grey lighten-2"
+            placeholder="Select distance"
+            item-value="id"
+            item-text="name"
+            no-data-text="Distance not available"
+            append-icon=""
+            :search-input.sync="searchInput"
+            shaped
+            solo
+            clearable
+            @keyup.native.enter="onEnter"
+            @change="onChange"
+        >
+            <template v-slot:prepend-item>
+                <v-list-item-content class="pt-0 pb-0">
+                    <v-list-item-title>
+                        <v-btn
+                            class="ma-2"
+                            text
+                            small
+                            color="primary"
+                            @click="openCustomDistanceDialog"
+                        >
+                            <v-icon left>mdi-plus</v-icon> Add custom distance
+                        </v-btn>
+                    </v-list-item-title>
+                </v-list-item-content>
+            </template>
 
-                <template v-slot:item="{ item }">
-                    <v-list-item-content>
-                        <v-list-item-title>
-                            {{ item.name }}
-                        </v-list-item-title>
-                    </v-list-item-content>
-                    <v-list-item-action v-if="item.isCustom">
-                        <div class="d-flex">
-                            <v-btn
-                                icon
-                                small
-                                color="primary"
-                                @click.stop.prevent="editDistance(item)"
-                            >
-                                <v-icon>mdi-pencil</v-icon>
-                            </v-btn>
-                            <v-btn
-                                icon
-                                small
-                                color="red"
-                                @click.stop.prevent="
-                                    confirmDeletion = true;
-                                    distanceToDelete = item.id;
-                                    closeAutocompleteMenu();
-                                "
-                            >
-                                <v-icon>mdi-delete</v-icon>
-                            </v-btn>
-                        </div>
-                    </v-list-item-action>
-                </template>
-            </v-autocomplete>
-        </v-scroll-y-transition>
+            <template v-slot:item="{ item }">
+                <v-list-item-content>
+                    <v-list-item-title>
+                        {{ item.name }}
+                    </v-list-item-title>
+                </v-list-item-content>
+                <v-list-item-action v-if="item.isCustom">
+                    <div class="d-flex">
+                        <v-btn
+                            icon
+                            small
+                            color="primary"
+                            @click.stop.prevent="editDistance(item)"
+                        >
+                            <v-icon>mdi-pencil</v-icon>
+                        </v-btn>
+                        <v-btn
+                            icon
+                            small
+                            color="red"
+                            @click.stop.prevent="
+                                confirmDeletion = true;
+                                distanceToDelete = item.id;
+                                closeAutocompleteMenu();
+                            "
+                        >
+                            <v-icon>mdi-delete</v-icon>
+                        </v-btn>
+                    </div>
+                </v-list-item-action>
+            </template>
+        </v-autocomplete>
 
         <value-display
             :value="distanceDisplay"

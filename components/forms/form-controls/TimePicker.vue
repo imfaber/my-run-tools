@@ -2,14 +2,21 @@
     <div
         v-on-clickaway="onClickAway"
         class="time-picker"
-        :class="{ 'no-hours': !useHours }"
+        :class="{
+            'no-hours': !useHours,
+            [displayValueSuffix
+                .toLowerCase()
+                .replace(/\//g, '-')]: !!displayValueSuffix
+        }"
     >
         <v-text-field
             ref="inputField"
             v-model="computedInputValue"
             shaped
             solo
-            :clear-icon="timeDefault !== computedInputValue ? 'mdi-close' : ''"
+            :clear-icon="
+                defaultDisplayValue !== computedInputValue ? 'mdi-close' : ''
+            "
             clearable
             type="text"
             autocomplete="off"
@@ -17,11 +24,12 @@
             @click:clear.stop.prevent="onClear"
             @input="onInput"
             @focus="onFocus"
+            @blur="onBlur"
             @keyup.native.enter="onClickAway"
         ></v-text-field>
 
         <value-display
-            :value="computedDisplayValue"
+            :value="formattedDisplayValue"
             :suffix="displayValueSuffix"
             @click="onFocus"
         ></value-display>
@@ -30,7 +38,7 @@
             <v-time-picker
                 v-if="isPickerActive"
                 ref="picker"
-                v-model="computedPickerValue"
+                v-model="computedDisplayValue"
                 use-seconds
                 scrollable
                 full-width
@@ -38,7 +46,14 @@
                 @input="onPickerInput"
             >
                 <v-spacer></v-spacer>
-                <v-btn fab dark x-small color="primary" @click="onClickAway()">
+                <v-btn
+                    class="btn--done"
+                    fab
+                    dark
+                    x-small
+                    color="primary"
+                    @click="onClickAway()"
+                >
                     <v-icon dark>mdi-check</v-icon>
                 </v-btn>
             </v-time-picker>
@@ -47,40 +62,16 @@
 </template>
 
 <script>
-import { directive as onClickaway } from 'vue-clickaway';
-import ValueDisplay from './ValueDisplay';
+import PickerMixin from '~/mixins/picker';
 import {
     formatDurationString,
-    isValidDurationFormat,
-    stringToMinutes
+    isValidDurationString
 } from '~/utils/duration.ts';
 
 export default {
-    components: { ValueDisplay },
-
-    directives: {
-        onClickaway
-    },
-
-    inheritAttrs: false,
+    mixins: [PickerMixin],
 
     props: {
-        inputValue: {
-            type: String,
-            default: ''
-        },
-        pickerValue: {
-            type: String,
-            default: ''
-        },
-        displayValue: {
-            type: String,
-            default: ''
-        },
-        displayValueSuffix: {
-            type: String,
-            default: ''
-        },
         useHours: {
             type: Boolean,
             default: false
@@ -89,99 +80,49 @@ export default {
 
     data() {
         return {
-            timeDefault: this.useHours ? '00:00:00' : '00:00',
-            newInputValue: null,
-            newPickerValue: null,
-            newDisplayValue: null,
-            isPickerActive: false
+            defaultDisplayValue: this.useHours ? '00:00:00' : '00:00'
         };
     },
     computed: {
-        computedInputValue: {
-            get() {
-                return this.newInputValue;
-            },
-            set(value) {
-                this.newInputValue = value;
-                this.onChange();
-            }
-        },
-
-        computedPickerValue: {
-            get() {
-                return this.newPickerValue;
-            },
-            set(value) {
-                this.newPickerValue = value;
-                this.computedDisplayValue = value;
-            }
-        },
-
-        computedDisplayValue: {
-            get() {
-                return this.newDisplayValue;
-            },
-            set(value) {
-                this.newDisplayValue =
-                    this.useHours || !value ? value : value.slice(-5);
-
-                if (
-                    stringToMinutes(this.computedInputValue || '') !==
-                    stringToMinutes(value || '')
-                ) {
-                    this.newInputValue = null;
-                }
-            }
+        formattedDisplayValue() {
+            return this.getFormattedValue(this.computedDisplayValue);
         }
-    },
-
-    watch: {
-        inputValue(value) {
-            this.computedInputValue = value;
-        },
-        pickerValue(value) {
-            this.computedPickerValue = value;
-        },
-        displayValue(value) {
-            this.computedDisplayValue = value;
-        }
-    },
-
-    created() {
-        this.computedDisplayValue = this.displayValue;
-        this.computedInputValue = this.inputValue;
-        this.computedPickerValue = this.pickerValue || this.timeDefault;
     },
 
     methods: {
         onInput(value) {
-            this.computedPickerValue = value
+            if (value && !isValidDurationString(value)) {
+                return;
+            }
+
+            this.computedDisplayValue = value
                 ? formatDurationString(value)
-                : this.timeDefault;
+                : this.defaultDisplayValue;
+        },
+
+        onBlur() {
+            if (
+                this.computedInputValue &&
+                !isValidDurationString(this.computedInputValue)
+            ) {
+                this.onPickerInput();
+            }
         },
 
         onPickerInput() {
-            this.computedInputValue = this.newDisplayValue;
-        },
-
-        onClear() {
-            this.computedInputValue = null;
-            this.$emit('clear', this.computedPickerValue);
-        },
-
-        onClickAway() {
-            this.isPickerActive = false;
-            this.$refs.inputField.$el.querySelector('input').blur();
+            this.computedInputValue = this.getFormattedValue(
+                this.computedDisplayValue
+            );
         },
 
         async onChange() {
             await this.$nextTick();
 
             if (
-                isValidDurationFormat(this.computedPickerValue) &&
-                this.computedPickerValue !== this.timeDefault
+                isValidDurationString(this.computedDisplayValue) &&
+                this.computedDisplayValue !== this.defaultDisplayValue
             ) {
-                this.$emit('change', this.computedPickerValue);
+                this.$emit('change', this.computedDisplayValue);
             }
         },
 
@@ -195,6 +136,10 @@ export default {
                 this.$refs.picker.selectingHour = false;
                 this.$refs.picker.selectingMinute = true;
             }
+        },
+
+        getFormattedValue(value) {
+            return this.useHours ? value : value.slice(-5);
         }
     }
 };
@@ -269,6 +214,12 @@ export default {
             span {
                 @extend %time-display-value;
             }
+
+            &:after {
+                font-size: 20px;
+                margin-left: 10px;
+                margin-top: 13px;
+            }
         }
 
         .v-picker__actions {
@@ -276,6 +227,14 @@ export default {
             bottom: 0;
             right: 0;
         }
+    }
+
+    &.min-mi ::v-deep .v-time-picker-title__time:after {
+        content: 'min/mi';
+    }
+
+    &.min-km ::v-deep .v-time-picker-title__time:after {
+        content: 'min/km';
     }
 }
 </style>

@@ -4,7 +4,11 @@ import { Duration } from './types';
 export function stringToDuration(str: string): Duration | undefined {
     let durationStr = str;
 
-    if (!isValidDurationFormat(str)) {
+    if (!isValidDurationString(str)) {
+        return;
+    }
+
+    if (parseDuration(str) !== null) {
         const parsedDurationStr = parseDuration(str);
 
         if (!parsedDurationStr) {
@@ -28,7 +32,7 @@ export function stringToDuration(str: string): Duration | undefined {
 export function stringToMinutes(str: string): number | undefined | null {
     let durationStr = str;
 
-    if (isValidDurationFormat(str)) {
+    if (isValidDurationString(str)) {
         const duration = stringToDuration(str);
 
         if (!duration) {
@@ -67,8 +71,11 @@ export function padDurationPart(n: number): string {
     return `0${n}`.slice(-2);
 }
 
-export function isValidDurationFormat(time: string): boolean {
-    return /^([01]\d|2[0-3]):?([0-5]\d):?([0-5]\d)$/.test(time);
+export function isValidDurationString(time: string): boolean {
+    return (
+        parseDuration(time) !== null ||
+        /^([01]\d|2[0-3]):?([0-5]\d):?([0-5]\d)$/.test(time)
+    );
 }
 
 export function minsToDuration(mins: number): string | undefined {
@@ -88,40 +95,3 @@ export function minsToDuration(mins: number): string | undefined {
         minutes
     )}:${padDurationPart(seconds)}`;
 }
-
-// export function timeToDate(time: Duration | string) {
-//     const { hours, minutes, seconds } =
-//         typeof time === 'string' ? stringToDuration(time) : time;
-
-//     if (
-//         isNaN(hours) ||
-//         hours < 0 ||
-//         hours > 23 ||
-//         isNaN(minutes) ||
-//         minutes < 0 ||
-//         minutes > 59 ||
-//         isNaN(seconds) ||
-//         seconds < 0 ||
-//         seconds > 59
-//     ) {
-//         return;
-//     }
-
-//     const d = new Date();
-//     d.setHours(hours);
-//     d.setMinutes(minutes);
-//     d.setSeconds(seconds);
-//     return d;
-// }
-
-// export function dateToMinutes(date: Date): Number | undefined {
-//     if (!(date instanceof Date)) {
-//         return;
-//     }
-
-//     const h = date.getHours();
-//     const m = date.getMinutes();
-//     const s = date.getSeconds();
-
-//     return h * 60 + m + s / 60;
-// }
