@@ -1,4 +1,4 @@
-<div align="center"> Calculators and converters for runners.
+<div align="center">
     <h1>MyRun.Tools</h1>
 </div>
 
