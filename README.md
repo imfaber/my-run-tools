@@ -1,11 +1,10 @@
-# MyRun.Tools
-
-<p align="center"> Calculators and converters for runners.
+<div align="center"> Calculators and converters for runners.
+    <h1>MyRun.Tools</h1>
     <br>
     <a href="https://myrun.tools/" target="_blank">Go to the app</a>
     <br>
     <br>
-</p>
+</div>
 
 <div align="center">
 
