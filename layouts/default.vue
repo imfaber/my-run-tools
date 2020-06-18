@@ -184,7 +184,7 @@ div.v-autocomplete__content.v-menu__content {
     margin-top: -7px;
     box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2),
         0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 5px 5px 0px rgba(0, 0, 0, 0.12);
-    border-radius: 5px 8px 28px 28px;
+    border-radius: 0 0 25px 25px;
     padding-top: 7px;
     background: white;
 
@@ -201,6 +201,14 @@ div.v-autocomplete__content.v-menu__content {
 
 header.v-app-bar.v-app-bar--fixed {
     z-index: 10;
+}
+
+.v-select--is-menu-active {
+    z-index: 5;
+}
+
+.v-input__append-inner {
+    margin-left: 5px !important;
 }
 
 .copy {

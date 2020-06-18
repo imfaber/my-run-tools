@@ -4,16 +4,19 @@
             ref="inputField"
             v-model="distance"
             :items="distancesList"
-            color="blue-grey lighten-2"
             placeholder="Select distance"
             item-value="id"
             item-text="name"
             no-data-text="Distance not available"
-            append-icon=""
             :search-input.sync="searchInput"
+            attach
             shaped
             solo
+            eager
             clearable
+            :readonly="!canEdit"
+            :append-icon="keyboardIcon"
+            @click:append.stop.prevent="isReadOnly = !isReadOnly"
             @keyup.native.enter="onEnter"
             @change="onChange"
         >
@@ -68,7 +71,7 @@
 
         <value-display
             :value="distanceDisplay"
-            @click="$refs.inputField.$el.querySelector('input').click()"
+            @click="openMenu"
         ></value-display>
 
         <form-custom-distance-dialog
@@ -162,7 +165,10 @@ export default {
             distanceToDelete: null,
             snackbar: false,
             snackbarText: null,
-            snackbarColor: null
+            snackbarColor: null,
+            isReadOnly: this.$vuetify.breakpoint.xs,
+            isPickerActive: false,
+            inputElement: null
         };
     },
 
@@ -184,6 +190,21 @@ export default {
             }
 
             return '...';
+        },
+
+        keyboardIcon() {
+            if (this.$vuetify.breakpoint.xs && this.isPickerActive) {
+                return this.canEdit ? 'mdi-keyboard-close' : 'mdi-keyboard';
+            }
+            return '';
+        },
+
+        canEdit() {
+            if (!this.isPickerActive) {
+                return true;
+            }
+
+            return !this.$vuetify.breakpoint.xs || !this.isReadOnly;
         }
     },
 
@@ -191,6 +212,19 @@ export default {
         value(value) {
             this.distance = value;
         }
+    },
+
+    mounted() {
+        this.inputElement = this.$refs.inputField.$el.querySelector('input');
+
+        this.$watch('$refs.inputField.$refs.menu.isActive', (value) => {
+            this.isPickerActive = value;
+
+            if (!value) {
+                this.isReadOnly = true;
+                this.inputElement.blur();
+            }
+        });
     },
 
     methods: {
@@ -210,12 +244,14 @@ export default {
                 };
             }
 
-            this.closeAutocompleteMenu();
             this.customDistanceDialog = true;
+            this.$refs.inputField.$refs.menu.isActive = false;
         },
 
-        closeAutocompleteMenu() {
-            this.$refs.inputField.$refs.menu.isActive = false;
+        openMenu() {
+            setTimeout(() => {
+                this.$refs.inputField.$refs.menu.isActive = true;
+            });
         },
 
         parseDistanceString(distance) {
@@ -312,6 +348,10 @@ export default {
 
     .v-text-field__details {
         display: none;
+    }
+
+    .v-select.v-select--is-menu-active .v-input__icon--append .v-icon {
+        transform: rotate(0deg);
     }
 }
 </style>

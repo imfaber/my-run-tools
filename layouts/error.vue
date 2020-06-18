@@ -1,9 +1,9 @@
 <template>
     <v-card class="mx-auto text-center pa-10" width="600">
-        <h1 class="font-weight-regular" v-if="error.statusCode === 404">
+        <h1 v-if="error.statusCode === 404" class="font-weight-regular">
             {{ pageNotFound }}
         </h1>
-        <h1 class="font-weight-regular" v-else>
+        <h1 v-else class="font-weight-regular">
             {{ otherError }}
         </h1>
 

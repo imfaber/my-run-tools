@@ -12,6 +12,9 @@
             type="number"
             autocomplete="off"
             v-bind="$attrs"
+            :append-icon="keyboardIcon"
+            :readonly="!canEdit"
+            @click:append.stop.prevent="toggleReadOnly"
             @click:clear.stop.prevent="onClear"
             @input="onInput"
             @focus="onFocus"
@@ -50,6 +53,19 @@
                         @end="onSliderEnd"
                         @click="onSliderClick"
                     ></v-slider>
+
+                    <div>
+                        <v-btn
+                            class="btn--done mt-2 mx-auto d-block"
+                            fab
+                            dark
+                            x-small
+                            color="primary"
+                            @click="onClickAway()"
+                        >
+                            <v-icon dark>mdi-check</v-icon>
+                        </v-btn>
+                    </div>
                 </div>
             </v-card>
         </v-fade-transition>
@@ -118,6 +134,10 @@ export default {
         left: 0;
         right: 0;
         z-index: 2;
+        border-radius: 0 0 16px 16px;
+        box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2),
+            0px 2px 2px 0px rgba(0, 0, 0, 0.14),
+            0px 5px 5px 0px rgba(0, 0, 0, 0.12);
 
         .picker__title {
             box-shadow: inset 0px -2px 1px 0px rgba(0, 0, 0, 0.25),

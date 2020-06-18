@@ -4,6 +4,7 @@
         class="time-picker"
         :class="{
             'no-hours': !useHours,
+            'picker-ready': isPickerReady,
             [displayValueSuffix
                 .toLowerCase()
                 .replace(/\//g, '-')]: !!displayValueSuffix
@@ -21,6 +22,9 @@
             type="text"
             autocomplete="off"
             v-bind="$attrs"
+            :append-icon="keyboardIcon"
+            :readonly="!canEdit"
+            @click:append.stop.prevent="toggleReadOnly"
             @click:clear.stop.prevent="onClear"
             @input="onInput"
             @focus="onFocus"
@@ -34,30 +38,36 @@
             @click="onFocus"
         ></value-display>
 
-        <v-fade-transition>
-            <v-time-picker
-                v-if="isPickerActive"
-                ref="picker"
-                v-model="computedDisplayValue"
-                use-seconds
-                scrollable
-                full-width
-                format="24hr"
-                @input="onPickerInput"
+        <v-time-picker
+            v-if="isPickerActive"
+            ref="picker"
+            v-model="computedDisplayValue"
+            use-seconds
+            scrollable
+            full-width
+            :format="useHours ? '24hr' : 'ampm'"
+            @input="onPickerInput"
+        >
+            <v-spacer></v-spacer>
+            <v-btn
+                class="btn--done"
+                fab
+                dark
+                x-small
+                color="primary"
+                @click="onClickAway()"
             >
-                <v-spacer></v-spacer>
-                <v-btn
-                    class="btn--done"
-                    fab
-                    dark
-                    x-small
-                    color="primary"
-                    @click="onClickAway()"
-                >
-                    <v-icon dark>mdi-check</v-icon>
-                </v-btn>
-            </v-time-picker>
-        </v-fade-transition>
+                <v-icon dark>mdi-check</v-icon>
+            </v-btn>
+        </v-time-picker>
+
+        <v-progress-linear
+            :active="loading"
+            indeterminate
+            absolute
+            bottom
+            color="white"
+        ></v-progress-linear>
     </div>
 </template>
 
@@ -80,7 +90,8 @@ export default {
 
     data() {
         return {
-            defaultDisplayValue: this.useHours ? '00:00:00' : '00:00'
+            defaultDisplayValue: this.useHours ? '00:00:00' : '00:00',
+            loading: false
         };
     },
     computed: {
@@ -128,6 +139,7 @@ export default {
 
         async onFocus() {
             this.isPickerActive = true;
+            this.loading = true;
             this.$refs.inputField.$el.querySelector('input').select();
 
             await this.$nextTick();
@@ -136,6 +148,14 @@ export default {
                 this.$refs.picker.selectingHour = false;
                 this.$refs.picker.selectingMinute = true;
             }
+
+            setTimeout(() => {
+                this.isPickerReady = true;
+            }, 500);
+
+            setTimeout(() => {
+                this.loading = false;
+            }, 1000);
         },
 
         getFormattedValue(value) {
@@ -160,7 +180,10 @@ export default {
         top: 100%;
         left: 0;
         margin-top: -72px;
+        margin-bottom: 25px;
         z-index: 2;
+        border-radius: 0 0 16px 16px;
+        overflow: hidden;
     }
 
     .time-display {
@@ -209,6 +232,11 @@ export default {
             background: var(--v-primary-base);
         }
 
+        .v-time-picker-title__ampm,
+        .v-time-picker-clock__ampm {
+            display: none;
+        }
+
         .v-time-picker-title__time {
             .v-picker__title__btn,
             span {
@@ -222,10 +250,26 @@ export default {
             }
         }
 
+        .v-time-picker-clock {
+            transition: opacity 0.6s ease;
+            opacity: 0;
+        }
+
         .v-picker__actions {
             position: absolute;
             bottom: 0;
             right: 0;
+        }
+
+        .v-progress-linear--absolute {
+            position: absolute;
+            z-index: 2;
+        }
+    }
+
+    &.picker-ready ::v-deep {
+        .v-time-picker-clock {
+            opacity: 1;
         }
     }
 

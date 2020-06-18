@@ -26,7 +26,9 @@ export default {
             newInputValue: null,
             newDisplayValue: null,
             defaultDisplayValue: null,
-            isPickerActive: false
+            isPickerActive: false,
+            isPickerReady: false,
+            isReadOnly: this.$vuetify.breakpoint.xs
         };
     },
 
@@ -50,6 +52,17 @@ export default {
             set(value) {
                 this.newDisplayValue = value || this.defaultDisplayValue;
             }
+        },
+
+        keyboardIcon() {
+            if (this.$vuetify.breakpoint.xs && this.isPickerActive) {
+                return this.canEdit ? 'mdi-keyboard-close' : 'mdi-keyboard';
+            }
+            return '';
+        },
+
+        canEdit() {
+            return !this.$vuetify.breakpoint.xs || !this.isReadOnly;
         }
     },
 
@@ -84,6 +97,7 @@ export default {
 
         onClickAway() {
             this.isPickerActive = false;
+            this.isPickerReady = false;
             this.$refs.inputField.$el.querySelector('input').blur();
         },
 
@@ -95,6 +109,11 @@ export default {
         onFocus() {
             this.isPickerActive = true;
             this.$refs.inputField.$el.querySelector('input').select();
+            this.isPickerReady = true;
+        },
+
+        toggleReadOnly() {
+            this.isReadOnly = !this.isReadOnly;
         }
     }
 };
