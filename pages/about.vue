@@ -8,7 +8,7 @@
                     </h1>
 
                     <p class="font-weight-light title">
-                        <span class="font-weight-regular">RunTools</span>
+                        <span class="font-weight-regular">MyRun.Tools</span>
                         is an open source project that aggregates a set of
                         useful calculators and converters for amateur runners.
                     </p>
@@ -64,6 +64,14 @@
         </v-container>
     </v-layout>
 </template>
+
+<script>
+export default {
+    head: {
+        title: 'About'
+    }
+};
+</script>
 
 <style lang="scss" scoped>
 .wrapper {

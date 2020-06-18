@@ -1,13 +1,13 @@
 import colors from 'vuetify/es5/util/colors';
 
-const title = 'Run Tools';
+const title = 'MyRun.Tools';
 
 export default {
     mode: 'universal',
     pwa: {
         manifest: {
-            name: 'RunTools',
-            short_name: 'RunTools',
+            name: title,
+            short_name: title,
             lang: 'en-US',
             categories: ['run', 'calcultor', 'converter']
         }

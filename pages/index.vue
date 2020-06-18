@@ -29,6 +29,9 @@ import ToolSelector from '~/components/ToolSelector.vue';
 export default {
     components: {
         ToolSelector
+    },
+    head: {
+        title: 'Home'
     }
 };
 </script>

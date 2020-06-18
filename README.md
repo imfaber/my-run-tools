@@ -1,6 +1,19 @@
-# run-tools
+# MyRun.Tools
 
-> Running tools
+<p align="center"> Calculators and converters for runners.
+    <br>
+    <br>
+</p>
+
+<div align="center">
+
+![CI](https://github.com/imfaber/run-tools/workflows/CI/badge.svg)
+[![Status](https://img.shields.io/badge/status-active-success.svg)]()
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](/LICENSE)
+
+</div>
+
+<br>
 
 ## Build Setup
 

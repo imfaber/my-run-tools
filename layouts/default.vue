@@ -71,7 +71,7 @@
             <v-app-bar-nav-icon color="white" @click.stop="drawer = !drawer" />
             <v-toolbar-title class="align-center">
                 <n-link to="/" class="title white--text navbar-link">
-                    Run<span class="font-weight-light">Tools</span>
+                    MyRun<span class="font-weight-light">Tools</span>
                 </n-link>
             </v-toolbar-title>
 
