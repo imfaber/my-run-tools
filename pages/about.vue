@@ -9,8 +9,8 @@
 
                     <p class="font-weight-light title">
                         <span class="font-weight-regular">RunTools</span>
-                        is an open source project that aggregates a set of useful
-                        calculators and converters for amateur runners.
+                        is an open source project that aggregates a set of
+                        useful calculators and converters for amateur runners.
                     </p>
                 </v-col>
             </v-row>
@@ -23,6 +23,18 @@
                     <p class="font-weight-light title">
                         If you found something broken or you need a tool that is
                         not currently present, please reach out to me at: <br />
+                        <v-btn
+                            small
+                            color="primary"
+                            dark
+                            link
+                            fab
+                            target="_blank"
+                            class="mt-6 mx-2"
+                            href="https://github.com/imfaber/run-tools/issues/new/choose"
+                        >
+                            <v-icon dark>mdi-github</v-icon>
+                        </v-btn>
                         <v-btn
                             small
                             color="primary"
