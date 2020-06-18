@@ -78,7 +78,7 @@
             <v-spacer />
 
             <a
-                href="https://github.com/imfaber/run-tools"
+                href="https://github.com/imfaber/my-run-tools"
                 target="_blank"
                 class="navbar-link"
             >

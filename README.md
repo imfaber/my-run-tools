@@ -11,6 +11,11 @@
 [![Status](https://img.shields.io/badge/status-active-success.svg)]()
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](/LICENSE)
 
+    <br>
+    <br>
+
+<a href="https://myrun.tools/" target="_blank">Go to the app</a>
+
 </div>
 
 <br>
