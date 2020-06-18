@@ -9,8 +9,8 @@
 
                     <p class="font-weight-light title">
                         <span class="font-weight-regular">RunTools</span>
-                        is an app that aggregates a set of useful calculators
-                        and converters for amateur runners.
+                        is an open source project that aggregates a set of useful
+                        calculators and converters for amateur runners.
                     </p>
                 </v-col>
             </v-row>
