@@ -4,6 +4,14 @@ const title = 'Run Tools';
 
 export default {
     mode: 'universal',
+    pwa: {
+        manifest: {
+            name: 'RunTools',
+            short_name: 'RunTools',
+            lang: 'en-US',
+            categories: ['run', 'calcultor', 'converter']
+        }
+    },
     /*
      ** Headers of the page
      */
@@ -96,12 +104,7 @@ export default {
     /*
      ** Build configuration
      */
-    build: {
-        /*
-         ** You can extend webpack config here
-         */
-        extend(config, ctx) {}
-    },
+    build: {},
     router: {
         middleware: []
     }
