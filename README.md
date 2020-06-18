@@ -2,6 +2,8 @@
 
 <p align="center"> Calculators and converters for runners.
     <br>
+    <a href="https://myrun.tools/" target="_blank">Go to the app</a>
+    <br>
     <br>
 </p>
 
@@ -10,11 +12,6 @@
 ![CI](https://github.com/imfaber/run-tools/workflows/CI/badge.svg)
 [![Status](https://img.shields.io/badge/status-active-success.svg)]()
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](/LICENSE)
-
-<br>
-<br>
-
-<a href="https://myrun.tools/" target="_blank">Go to the app</a>
 
 </div>
 
