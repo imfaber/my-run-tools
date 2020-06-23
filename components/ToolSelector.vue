@@ -1,5 +1,5 @@
 <template>
-    <v-autocomplete
+    <VAutocomplete
         v-if="autocomplete && !this.$vuetify.breakpoint.xs"
         class="tool-selector"
         :items="tools"
@@ -18,7 +18,7 @@
         :value="value"
         @change="choose"
     />
-    <v-select
+    <VSelect
         v-else-if="autocomplete && this.$vuetify.breakpoint.xs"
         class="tool-selector"
         :items="tools"
@@ -36,26 +36,26 @@
         :value="value"
         @change="choose"
     />
-    <v-card v-else class="mx-auto nav" rounded shaped>
-        <v-list>
-            <v-list-item-group color="primary">
-                <v-list-item
+    <VCard v-else class="mx-auto nav" rounded shaped>
+        <VList>
+            <VListItemGroup color="primary">
+                <VListItem
                     v-for="(item, i) in tools"
                     :key="i"
                     :to="{ name: item.routeName }"
                     nuxt
                     router
                 >
-                    <v-list-item-content>
-                        <v-list-item-title
+                    <VListItemContent>
+                        <VListItemTitle
                             class="text-center"
                             v-text="item.title"
-                        ></v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
-            </v-list-item-group>
-        </v-list>
-    </v-card>
+                        />
+                    </VListItemContent>
+                </VListItem>
+            </VListItemGroup>
+        </VList>
+    </VCard>
 </template>
 
 <script>

@@ -1,6 +1,6 @@
 <template>
     <div v-on-clickaway="onClickAway" class="number-picker">
-        <v-text-field
+        <VTextField
             ref="inputField"
             v-model="computedInputValue"
             :min="min"
@@ -19,16 +19,16 @@
             @input="onInput"
             @focus="onFocus"
             @keyup.native.enter="onClickAway"
-        ></v-text-field>
+        />
 
-        <value-display
+        <ValueDisplay
             :value="computedDisplayValue"
             :suffix="displayValueSuffix"
             @click="onFocus"
-        ></value-display>
+        />
 
-        <v-fade-transition>
-            <v-card v-if="isPickerActive" class="picker">
+        <VFadeTransition>
+            <VCard v-if="isPickerActive" class="picker">
                 <div class="picker__title">
                     <div>
                         {{ computedDisplayValue }}
@@ -38,7 +38,7 @@
                     </div>
                 </div>
                 <div class="picker__body pa-2">
-                    <v-slider
+                    <VSlider
                         v-model="computedDisplayValue"
                         class="mt-4"
                         append-icon="mdi-plus"
@@ -52,10 +52,10 @@
                         @start="onSliderStart"
                         @end="onSliderEnd"
                         @click="onSliderClick"
-                    ></v-slider>
+                    />
 
                     <div>
-                        <v-btn
+                        <VBtn
                             class="btn--done mt-2 mx-auto d-block"
                             fab
                             dark
@@ -64,25 +64,32 @@
                             @click="onClickAway()"
                         >
                             <v-icon dark>mdi-check</v-icon>
-                        </v-btn>
+                        </VBtn>
                     </div>
                 </div>
-            </v-card>
-        </v-fade-transition>
+            </VCard>
+        </VFadeTransition>
     </div>
 </template>
 
 <script>
-import PickerMixin from '~/mixins/picker';
+import PickerMixin from '../../../mixins/picker';
 
 export default {
     mixins: [PickerMixin],
 
     props: {
+        /**
+         * Min value
+         */
         min: {
             type: [Number, String],
             default: 0
         },
+
+        /**
+         * Max value
+         */
         max: {
             type: [Number, String],
             default: 50

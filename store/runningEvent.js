@@ -1,9 +1,6 @@
 import { v1 as uuid } from 'uuid';
-import runningEvents from '~/data/running-events';
-import {
-    UNIT_SYSTEM_LENGTH_METRIC_UNITS,
-    UNIT_SYSTEM_LENGTH_IMPERIAL_UNITS
-} from '~/utils/unit-system';
+import runningEvents from '~/data/running-events.ts';
+import { lengthMetricUnits, lengthImperialUnits } from '~/utils/unit-system.ts';
 
 export const state = () => ({
     events: [...runningEvents]
@@ -64,15 +61,11 @@ export const getters = {
         state.events.findIndex((e) => e.id === id),
 
     getMetricEvents: (state) => {
-        return state.events.filter((e) =>
-            UNIT_SYSTEM_LENGTH_METRIC_UNITS.includes(e.unit)
-        );
+        return state.events.filter((e) => lengthMetricUnits.includes(e.unit));
     },
 
     getImperialEvents: (state) => {
-        return state.events.filter((e) =>
-            UNIT_SYSTEM_LENGTH_IMPERIAL_UNITS.includes(e.unit)
-        );
+        return state.events.filter((e) => lengthImperialUnits.includes(e.unit));
     }
 };
 

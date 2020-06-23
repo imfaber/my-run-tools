@@ -11,10 +11,16 @@ export default {
     inheritAttrs: false,
 
     props: {
+        /**
+         * The display value
+         */
         displayValue: {
             type: [String, Number],
             default: ''
         },
+        /**
+         * The display value suffix
+         */
         displayValueSuffix: {
             type: [String, Number],
             default: ''

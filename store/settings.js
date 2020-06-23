@@ -1,7 +1,7 @@
-import { UNIT_SYSTEM_METRIC } from '~/utils/unit-system';
+import { UnitSystem } from '~/utils/types.ts';
 
 export const state = () => ({
-    unitSystem: UNIT_SYSTEM_METRIC,
+    unitSystem: UnitSystem.Metric,
     darkTheme: false,
     compactNavPanel: true
 });
@@ -18,4 +18,8 @@ export const actions = {
     }
 };
 
-export const getters = {};
+export default {
+    state,
+    mutations,
+    actions
+};

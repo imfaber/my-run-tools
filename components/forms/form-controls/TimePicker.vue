@@ -10,7 +10,7 @@
                 .replace(/\//g, '-')]: !!displayValueSuffix
         }"
     >
-        <v-text-field
+        <VTextField
             ref="inputField"
             v-model="computedInputValue"
             shaped
@@ -30,15 +30,15 @@
             @focus="onFocus"
             @blur="onBlur"
             @keyup.native.enter="onClickAway"
-        ></v-text-field>
+        />
 
-        <value-display
+        <ValueDisplay
             :value="formattedDisplayValue"
             :suffix="displayValueSuffix"
             @click="onFocus"
-        ></value-display>
+        />
 
-        <v-time-picker
+        <VTimePicker
             v-if="isPickerActive"
             ref="picker"
             v-model="computedDisplayValue"
@@ -48,8 +48,8 @@
             :format="useHours ? '24hr' : 'ampm'"
             @input="onPickerInput"
         >
-            <v-spacer></v-spacer>
-            <v-btn
+            <VSpacer />
+            <VBtn
                 class="btn--done"
                 fab
                 dark
@@ -57,22 +57,22 @@
                 color="primary"
                 @click="onClickAway()"
             >
-                <v-icon dark>mdi-check</v-icon>
-            </v-btn>
-        </v-time-picker>
+                <VIcon dark>mdi-check</VIcon>
+            </VBtn>
+        </VTimePicker>
 
-        <v-progress-linear
+        <VProgressLinear
             :active="loading"
             indeterminate
             absolute
             bottom
             color="white"
-        ></v-progress-linear>
+        />
     </div>
 </template>
 
 <script>
-import PickerMixin from '~/mixins/picker';
+import PickerMixin from '../../../mixins/picker';
 import {
     formatDurationString,
     isValidDurationString
@@ -82,6 +82,9 @@ export default {
     mixins: [PickerMixin],
 
     props: {
+        /**
+         * Whether to use hours or not
+         */
         useHours: {
             type: Boolean,
             default: false

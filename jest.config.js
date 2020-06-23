@@ -8,9 +8,10 @@ module.exports = {
     transform: {
         '^.+\\.ts$': 'ts-jest',
         '^.+\\.js$': 'babel-jest',
-        '.*\\.(vue)$': 'vue-jest'
+        '.*\\.(vue)$': 'vue-jest',
+        '^.+\\.mdx$': '@storybook/addon-docs/jest-transform-mdx'
     },
-    collectCoverage: true,
+    collectCoverage: false,
     collectCoverageFrom: [
         '<rootDir>/components/**/*.vue',
         '<rootDir>/pages/**/*.vue',

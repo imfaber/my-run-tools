@@ -1,15 +1,17 @@
 <template>
-    <v-dialog v-bind="{ ...$props, ...$attrs }">
-        <v-card>
-            <v-form ref="form" v-model="valid">
-                <v-card-title>
+    <VDialog v-bind="{ ...$props, ...$attrs }">
+        <VCard>
+            <VForm ref="form" v-model="valid">
+                <VCardTitle>
                     <span class="headline">{{ title }}</span>
-                </v-card-title>
-                <v-divider></v-divider>
-                <v-card-text>
-                    <v-container>
-                        <v-row>
-                            <v-text-field
+                </VCardTitle>
+
+                <VDivider />
+
+                <VCardText>
+                    <VContainer>
+                        <VRow>
+                            <VTextField
                                 v-model="localDistance.name"
                                 label="Distance name"
                                 placeholder="E.g. My long run"
@@ -17,8 +19,8 @@
                                 :rules="nameRules"
                                 autocomplete="off"
                                 class="mb-4"
-                            ></v-text-field>
-                            <v-text-field
+                            />
+                            <VTextField
                                 v-model="localDistance.value"
                                 label="Distance"
                                 required
@@ -30,7 +32,7 @@
                                 autocomplete="off"
                             >
                                 <template v-slot:append>
-                                    <v-select
+                                    <VSelect
                                         v-model="localDistance.unit"
                                         :items="unitsList"
                                         solo
@@ -44,32 +46,33 @@
                                                     (x) => x.value === v
                                                 ) || 'Unit is required'
                                         ]"
-                                    ></v-select>
+                                    ></VSelect>
                                 </template>
-                            </v-text-field>
+                            </VTextField>
 
-                            <v-alert v-if="error" dense type="error">
+                            <VAlert v-if="error" dense type="error">
                                 <!-- eslint-disable-next-line vue/no-v-html -->
                                 <span v-html="error"></span>
-                            </v-alert>
-                        </v-row>
-                    </v-container>
-                </v-card-text>
-                <v-divider></v-divider>
-                <v-card-actions class="pr-6 pl-6 pt-4 pb-4">
-                    <v-btn color="blue darken-1" text @click="$emit('close')"
-                        >Cancel</v-btn
-                    >
-                    <v-spacer></v-spacer>
-                    <v-btn color="primary" @click="onSave">Save</v-btn>
-                </v-card-actions>
-            </v-form>
-        </v-card>
-    </v-dialog>
+                            </VAlert>
+                        </VRow>
+                    </VContainer>
+                </VCardText>
+                <VDivider />
+                <VCardActions class="pr-6 pl-6 pt-4 pb-4">
+                    <VBtn color="blue darken-1" text @click="$emit('close')">
+                        Cancel
+                    </VBtn>
+                    <VSpacer />
+                    <VBtn color="primary" @click="onSave">Save</VBtn>
+                </VCardActions>
+            </VForm>
+        </VCard>
+    </VDialog>
 </template>
 
 <script>
-import { getUnits, UNIT_SYSTEM_MEASURE_LENGTH } from '~/utils/unit-system';
+import { getUnits } from '~/utils/unit-system.ts';
+import { Measure } from '~/utils/types.ts';
 
 const distanceDefault = {
     isCustom: false,
@@ -82,16 +85,17 @@ export default {
     props: {
         distance: {
             type: Object,
-            default: distanceDefault
+            default: () => distanceDefault
         },
         distancesList: {
             type: Array,
-            required: true
+            required: true,
+            default: () => []
         }
     },
     data() {
         const unitsList = getUnits(
-            UNIT_SYSTEM_MEASURE_LENGTH,
+            Measure.Length,
             this.$store.state.settings.unitSystem
         ).map((x) => ({
             text: x.plural,

@@ -1,6 +1,6 @@
 <template>
     <div class="distance-picker">
-        <v-autocomplete
+        <VAutocomplete
             ref="inputField"
             v-model="distance"
             :items="distancesList"
@@ -21,38 +21,38 @@
             @change="onChange"
         >
             <template v-slot:prepend-item>
-                <v-list-item-content class="pt-0 pb-0">
-                    <v-list-item-title>
-                        <v-btn
+                <VListItemContent class="pt-0 pb-0">
+                    <VListItemTitle>
+                        <VBtn
                             class="ma-2"
                             text
                             small
                             color="primary"
                             @click="openCustomDistanceDialog"
                         >
-                            <v-icon left>mdi-plus</v-icon> Add custom distance
-                        </v-btn>
-                    </v-list-item-title>
-                </v-list-item-content>
+                            <VIcon left>mdi-plus</VIcon> Add custom distance
+                        </VBtn>
+                    </VListItemTitle>
+                </VListItemContent>
             </template>
 
             <template v-slot:item="{ item }">
-                <v-list-item-content>
-                    <v-list-item-title>
+                <VListItemContent>
+                    <VListItemTitle>
                         {{ item.name }}
-                    </v-list-item-title>
-                </v-list-item-content>
-                <v-list-item-action v-if="item.isCustom">
+                    </VListItemTitle>
+                </VListItemContent>
+                <VListItemAction v-if="item.isCustom">
                     <div class="d-flex">
-                        <v-btn
+                        <VBtn
                             icon
                             small
                             color="primary"
                             @click.stop.prevent="editDistance(item)"
                         >
-                            <v-icon>mdi-pencil</v-icon>
-                        </v-btn>
-                        <v-btn
+                            <VIcon>mdi-pencil</VIcon>
+                        </VBtn>
+                        <VBtn
                             icon
                             small
                             color="red"
@@ -62,19 +62,16 @@
                                 closeAutocompleteMenu();
                             "
                         >
-                            <v-icon>mdi-delete</v-icon>
-                        </v-btn>
+                            <VIcon>mdi-delete</VIcon>
+                        </VBtn>
                     </div>
-                </v-list-item-action>
+                </VListItemAction>
             </template>
-        </v-autocomplete>
+        </VAutocomplete>
 
-        <value-display
-            :value="distanceDisplay"
-            @click="openMenu"
-        ></value-display>
+        <ValueDisplay :value="distanceDisplay" @click="openMenu" />
 
-        <form-custom-distance-dialog
+        <FormCustomDistanceDialog
             v-if="customDistanceDialog"
             v-model="customDistanceDialog"
             persistent
@@ -82,29 +79,29 @@
             :distance="distanceToEdit"
             :distances-list="distancesList"
             @close="closeCustomDistanceDialog"
-        ></form-custom-distance-dialog>
+        />
 
-        <v-dialog
+        <VDialog
             v-if="confirmDeletion"
             v-model="confirmDeletion"
             max-width="310"
         >
-            <v-card>
-                <v-card-title class="headline">
+            <VCard>
+                <VCard-title class="headline">
                     Delete custom distance
-                </v-card-title>
+                </VCard-title>
 
-                <v-card-text>
+                <VCard-text>
                     You are about to delete
                     <strong class="red--text">
                         {{ getDistanceById(distanceToDelete).name }}
                     </strong>
-                </v-card-text>
+                </VCard-text>
 
-                <v-card-actions>
-                    <v-spacer></v-spacer>
+                <VCardActions>
+                    <VSpacer />
 
-                    <v-btn
+                    <VBtn
                         color="grey"
                         text
                         @click="
@@ -113,17 +110,17 @@
                         "
                     >
                         cancel
-                    </v-btn>
+                    </VBtn>
 
-                    <v-btn color="red" dark @click="deleteDistance()">
-                        <v-icon left small>mdi-delete</v-icon>
+                    <VBtn color="red" dark @click="deleteDistance()">
+                        <VIcon left small>mdi-delete</VIcon>
                         Delete
-                    </v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
+                    </VBtn>
+                </VCardActions>
+            </VCard>
+        </VDialog>
 
-        <v-snackbar
+        <VSnackbar
             v-model="snackbar"
             :timeout="3000"
             :color="snackbarColor"
@@ -131,10 +128,10 @@
         >
             <!-- eslint-disable-next-line vue/no-v-html -->
             <span v-html="snackbarText"></span>
-            <v-btn icon fab x-small dark @click="snackbar = false">
-                <v-icon>mdi-close</v-icon>
-            </v-btn>
-        </v-snackbar>
+            <VBtn icon fab x-small dark @click="snackbar = false">
+                <VIcon>mdi-close</VIcon>
+            </VBtn>
+        </VSnackbar>
     </div>
 </template>
 
@@ -143,12 +140,16 @@ import { mapGetters, mapState, mapMutations } from 'vuex';
 import parseUnit from 'parse-unit';
 import FormCustomDistanceDialog from '../FormCustomDistanceDialog';
 import ValueDisplay from './ValueDisplay';
-import { UNIT_SYSTEM_MEASURE_LENGTH, isValidUnit } from '~/utils/unit-system';
+import { isValidUnit } from '~/utils/unit-system.ts';
+import { Measure } from '~/utils/types.ts';
 
 export default {
     components: { ValueDisplay, FormCustomDistanceDialog },
 
     props: {
+        /**
+         * The value
+         */
         value: {
             type: String,
             default: ''
@@ -215,6 +216,10 @@ export default {
     },
 
     mounted() {
+        if (!this.$refs.inputField) {
+            return;
+        }
+
         this.inputElement = this.$refs.inputField.$el.querySelector('input');
 
         this.$watch('$refs.inputField.$refs.menu.isActive', (value) => {
@@ -260,7 +265,7 @@ export default {
 
             if (parsed[1] === 'k') parsed[1] = 'km';
 
-            const unit = isValidUnit(UNIT_SYSTEM_MEASURE_LENGTH, parsed[1])
+            const unit = isValidUnit(Measure.Length, parsed[1])
                 ? parsed[1]
                 : null;
 
@@ -352,6 +357,26 @@ export default {
 
     .v-select.v-select--is-menu-active .v-input__icon--append .v-icon {
         transform: rotate(0deg);
+    }
+
+    div.v-autocomplete__content.v-menu__content {
+        margin-top: -7px;
+        box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2),
+            0px 2px 2px 0px rgba(0, 0, 0, 0.14),
+            0px 5px 5px 0px rgba(0, 0, 0, 0.12);
+        border-radius: 0 0 25px 25px;
+        padding-top: 7px;
+        background: white;
+
+        .v-list {
+            border-radius: 0;
+            padding: 0;
+
+            .v-list-item__content {
+                padding-left: 8px;
+                padding-right: 8px;
+            }
+        }
     }
 }
 </style>

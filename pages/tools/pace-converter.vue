@@ -1,73 +1,66 @@
 <template>
-    <v-row align="center" justify="center">
-        <v-col cols="12" class="text-center mb-8">
-            <h1 class="font-weight-regular">Pace Converter</h1>
-
-            <div class="font-weight-light title">
-                Fill any field to convert the others.
-            </div>
-        </v-col>
-        <v-col cols="12" md="3">
-            <h2 class="font-weight-regular mb-4 text-center">Metric pace</h2>
-            <time-picker
+    <ToolSection :title="title" :description="description">
+        <ToolWidget cols="12" md="3" title="Metric pace">
+            <TimePicker
                 ref="metricPace"
                 :display-value="metricPace"
                 placeholder="Enter pace"
                 display-value-suffix="min/km"
                 @change="onMetricPaceChange"
                 @clear="onClear"
-            ></time-picker>
-        </v-col>
+            />
+        </ToolWidget>
 
-        <v-col cols="12" md="3">
-            <h2 class="font-weight-regular mb-4 text-center">Imperial pace</h2>
-            <time-picker
+        <ToolWidget cols="12" md="3" title="Imperial pace">
+            <TimePicker
                 ref="imperialPace"
                 :display-value="imperialPace"
                 display-value-suffix="min/mi"
                 placeholder="Enter pace"
                 @change="onImperialPaceChange"
                 @clear="onClear"
-            ></time-picker>
-        </v-col>
+            />
+        </ToolWidget>
 
-        <v-col cols="12" md="3">
-            <h2 class="font-weight-regular mb-4 text-center">Metric speed</h2>
-            <number-picker
+        <ToolWidget cols="12" md="3" title="Metric speed">
+            <NumberPicker
                 ref="metricSpeed"
                 :display-value="metricSpeed"
                 display-value-suffix="km/h"
                 placeholder="Enter speed"
                 @change="onMetricSpeedChange"
                 @clear="onClear"
-            ></number-picker>
-        </v-col>
+            />
+        </ToolWidget>
 
-        <v-col cols="12" md="3">
-            <h2 class="font-weight-regular mb-4 text-center">Imperial speed</h2>
-            <number-picker
+        <ToolWidget cols="12" md="3" title="Imperial speed">
+            <NumberPicker
                 ref="imperialSpeed"
                 :display-value="imperialSpeed"
                 display-value-suffix="mph"
                 placeholder="Enter speed"
                 @change="onImperialSpeedChange"
                 @clear="onClear"
-            ></number-picker>
-        </v-col>
-    </v-row>
+            />
+        </ToolWidget>
+    </ToolSection>
 </template>
 
 <script>
 import convert from 'convert-units';
 import TimePicker from '~/components/forms/form-controls/TimePicker';
 import NumberPicker from '~/components/forms/form-controls/NumberPicker';
+import ToolWidget from '~/components/ToolWidget';
+import ToolSection from '~/components/ToolSection';
 import { stringToMinutes, minsToDuration } from '~/utils/duration.ts';
 import ToolMixin from '~/mixins/tool';
 
 export default {
     components: {
         TimePicker,
-        NumberPicker
+        NumberPicker,
+        ToolSection,
+        ToolWidget
     },
 
     mixins: [ToolMixin],

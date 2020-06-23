@@ -1,11 +1,17 @@
-import tools from '~/data/tools';
-import { UNIT_SYSTEM_METRIC } from '~/utils/unit-system';
+import tools from '~/data/tools.ts';
+import { UnitSystem } from '~/utils/types.ts';
 
 export default {
     head() {
-        const { title } = tools.find((x) => x.name === this.$route.name);
         return {
-            title
+            title: this.title,
+            description: this.description
+        };
+    },
+
+    data() {
+        return {
+            ...tools.find((x) => x.id === this.$route.name)
         };
     },
 
@@ -15,7 +21,7 @@ export default {
         },
 
         isMetricSystem() {
-            return this.unitSystem === UNIT_SYSTEM_METRIC;
+            return this.unitSystem === UnitSystem.Metric;
         }
     }
 };

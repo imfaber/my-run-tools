@@ -1,5 +1,5 @@
 <template>
-    <v-card class="mx-auto text-center pa-10" width="600">
+    <VCard class="mx-auto text-center pa-10" width="600">
         <h1 v-if="error.statusCode === 404" class="font-weight-regular">
             {{ pageNotFound }}
         </h1>
@@ -10,7 +10,7 @@
         <NuxtLink to="/" class="mt-4 d-block">
             Go back to the Home page
         </NuxtLink>
-    </v-card>
+    </VCard>
 </template>
 
 <script>

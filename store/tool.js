@@ -7,3 +7,8 @@ export const mutations = {
         state.list = list;
     }
 };
+
+export default {
+    state,
+    mutations
+};

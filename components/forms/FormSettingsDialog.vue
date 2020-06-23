@@ -55,15 +55,15 @@
 </template>
 
 <script>
-import { UNIT_SYSTEM_METRIC, UNIT_SYSTEM_IMPERIAL } from '~/utils/unit-system';
+import { UnitSystem } from '~/utils/types.ts';
 
 export default {
     data() {
         return {
             valid: false,
             settings: this.$store.state.settings,
-            metricSystem: UNIT_SYSTEM_METRIC,
-            imperialSystem: UNIT_SYSTEM_IMPERIAL
+            metricSystem: UnitSystem.Metric,
+            imperialSystem: UnitSystem.Imperial
         };
     },
     computed: {
@@ -96,8 +96,3 @@ export default {
     }
 };
 </script>
-
-<style lang="scss" scoped>
-::v-deep {
-}
-</style>
