@@ -24,6 +24,12 @@ export interface Duration {
     seconds: number;
 }
 
+export interface Settings {
+    unitSystem: UnitSystem;
+    darkTheme: boolean;
+    compactNavPanel: boolean;
+}
+
 export interface Tool {
     id: string;
     title: string;
