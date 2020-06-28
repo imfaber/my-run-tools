@@ -23,5 +23,6 @@
             "@nuxtjs/vuetify"
         ]
     },
-    "exclude": ["node_modules", ".nuxt", "dist", "cypress"]
+    "exclude": ["node_modules", ".nuxt", "dist", "cypress"],
+    "include": ["**/*.ts", "**/*.vue"]
 }

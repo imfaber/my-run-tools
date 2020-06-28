@@ -37,7 +37,7 @@ export interface Tool {
 }
 
 export interface RunningEvent {
-    id: string;
+    id?: string;
     name: string;
     value: number;
     unit: UnitAbbreviation;

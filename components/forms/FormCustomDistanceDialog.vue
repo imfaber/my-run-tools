@@ -70,96 +70,90 @@
     </VDialog>
 </template>
 
-<script>
+<script lang="ts">
+import { Mixins, Component, Prop } from 'vue-property-decorator';
+import StoreAccessorMixin from '~/mixins/store-accessor';
+import { RunningEvent } from '~/utils/types';
 import { getUnits } from '~/utils/unit-system.ts';
 import { Measure } from '~/utils/types.ts';
 
 const distanceDefault = {
     isCustom: false,
-    name: null,
-    value: null,
-    unit: null
+    name: undefined,
+    value: undefined,
+    unit: undefined
 };
 
-export default {
-    props: {
-        distance: {
-            type: Object,
-            default: () => distanceDefault
-        },
-        distancesList: {
-            type: Array,
-            required: true,
-            default: () => []
-        }
-    },
-    data() {
-        const unitsList = getUnits(
-            Measure.Length,
-            this.$store.state.settings.unitSystem
-        ).map((x) => ({
-            text: x.plural,
-            value: x.abbr
-        }));
+@Component
+export default class FormCustomDistanceDialog extends Mixins(
+    StoreAccessorMixin
+) {
+    @Prop({ default: () => distanceDefault })
+    readonly distance!: RunningEvent;
 
-        return {
-            valid: false,
-            error: null,
-            unitsList,
-            localDistance: {
-                ...distanceDefault,
-                unit: unitsList[0].value,
-                ...this.distance
-            },
-            nameRules: [
-                (v) => !!v || 'Distance name is required',
-                (v) =>
-                    !this.distancesList.find(
-                        (x) => x.name === v && x.id !== this.localDistance.id
-                    ) || 'This name is already taken',
-                (v) =>
-                    (v && v.length > 1) ||
-                    'Distance name must be more than 1 character'
-            ],
-            distanceRules: [
-                (v) => !!v || 'Distance is required',
-                (v) =>
-                    (v && parseInt(v) > 0) || 'Distance must be greater than 0'
-            ]
-        };
-    },
+    @Prop({ default: () => [] })
+    readonly distancesList!: Array<RunningEvent>;
 
-    computed: {
-        isEdit() {
-            return this.localDistance.isCustom;
-        },
-        title() {
-            const action = this.isEdit ? 'Edit' : 'Add';
-            return `${action} custom distance`;
-        }
-    },
+    $refs!: {
+        form: any;
+    };
 
-    methods: {
-        async onSave() {
-            this.$refs.form.validate();
+    valid = false;
+    error = null;
 
-            if (!this.valid) {
-                return;
-            }
+    unitsList = getUnits(
+        Measure.Length,
+        this.$store.state.settings.unitSystem
+    ).map((x) => ({
+        text: x.plural,
+        value: x.abbr
+    }));
 
-            const action = this.isEdit
-                ? 'runningEvent/editEvent'
-                : 'runningEvent/addEvent';
+    localDistance = {
+        ...distanceDefault,
+        unit: this.unitsList[0].value,
+        ...this.distance
+    };
 
-            const distance = await this.$store.dispatch(
-                action,
-                this.localDistance
-            );
+    nameRules = [
+        (v: string) => !!v || 'Distance name is required',
+        (v: string) =>
+            !this.distancesList.find(
+                (x) => x.name === v && x.id !== this.localDistance.id
+            ) || 'This name is already taken',
+        (v: string) =>
+            (v && v.length > 1) || 'Distance name must be more than 1 character'
+    ];
 
-            this.$emit('close', { isEdit: this.isEdit, distance });
-        }
+    distanceRules = [
+        (v: string) => !!v || 'Distance is required',
+        (v: string) =>
+            (v && parseInt(v) > 0) || 'Distance must be greater than 0'
+    ];
+
+    get isEdit() {
+        return this.localDistance.isCustom;
     }
-};
+
+    get title() {
+        const action = this.isEdit ? 'Edit' : 'Add';
+        return `${action} custom distance`;
+    }
+
+    async onSave() {
+        this.$refs.form.validate();
+
+        if (!this.valid) {
+            return;
+        }
+
+        const distance = await this.runningEventStore[
+            this.isEdit ? 'edit' : 'add'
+        ](this.localDistance);
+
+        this.$emit('close', { isEdit: this.isEdit, distance });
+    }
+}
 </script>
 
 <style lang="scss" scoped>

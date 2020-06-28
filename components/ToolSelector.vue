@@ -58,37 +58,26 @@
     </VCard>
 </template>
 
-<script>
-export default {
-    props: {
-        autocomplete: {
-            type: Boolean,
-            default: true
-        }
-    },
+<script lang="ts">
+import { Mixins, Component, Prop } from 'vue-property-decorator';
+import StoreAccessorMixin from '~/mixins/store-accessor.ts';
 
-    data() {
-        return {
-            toolItems: null
-        };
-    },
+@Component
+export default class YourComponent extends Mixins(StoreAccessorMixin) {
+    @Prop({ default: true }) readonly autocomplete!: boolean;
 
-    computed: {
-        tools() {
-            return this.$store.state.tool.list;
-        },
-
-        value() {
-            return this.tools.find((x) => x.routeName === this.$route.name);
-        }
-    },
-
-    methods: {
-        choose(routeName) {
-            this.$router.push({ name: routeName });
-        }
+    get tools() {
+        return this.toolStore.list;
     }
-};
+
+    get value() {
+        return this.tools.find((x) => x.id === this.$route.name);
+    }
+
+    choose(routeName: string) {
+        this.$router.push({ name: routeName });
+    }
+}
 </script>
 
 <style lang="scss" scoped>

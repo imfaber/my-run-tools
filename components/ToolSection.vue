@@ -11,17 +11,12 @@
     </VRow>
 </template>
 
-<script>
-export default {
-    props: {
-        title: {
-            type: String,
-            required: true
-        },
-        description: {
-            type: String,
-            default: ''
-        }
-    }
-};
+<script lang="ts">
+import { Vue, Component, Prop } from 'vue-property-decorator';
+
+@Component
+export default class ToolSection extends Vue {
+    @Prop(String) readonly title: string | undefined;
+    @Prop(String) readonly description: string | undefined;
+}
 </script>

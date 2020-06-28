@@ -1,16 +1,16 @@
-import DistancePickerTs from './DistancePickerTs.vue';
+import DistancePicker from './DistancePicker.vue';
 import store from '~/.storybook/store';
 
 export default {
     title: 'Pickers',
-    component: DistancePickerTs,
+    component: DistancePicker,
     parameters: {
         weight: 0
     }
 };
 
-export const distancePickerTs = () => ({
-    components: { DistancePickerTs },
+export const distancePicker = () => ({
+    components: { DistancePicker },
     store,
-    template: '<DistancePickerTs />'
+    template: '<DistancePicker />'
 });

@@ -1,7 +1,6 @@
 <template>
     <ToolSection :title="title" :description="description">
         <ToolWidget cols="12" md="3" title="Distance">
-            <DistancePickerTs />
             <DistancePicker @change="onDistanceChange" />
         </ToolWidget>
 
@@ -37,7 +36,6 @@
 import convert from 'convert-units';
 import TimePicker from '~/components/forms/form-controls/TimePicker';
 import DistancePicker from '~/components/forms/form-controls/DistancePicker';
-import DistancePickerTs from '~/components/forms/form-controls/DistancePickerTs';
 import ToolWidget from '~/components/ToolWidget';
 import ToolSection from '~/components/ToolSection';
 import { stringToMinutes, minsToDuration } from '~/utils/duration.ts';
@@ -49,7 +47,6 @@ export default {
         DistancePicker,
         ToolSection,
         ToolWidget,
-        DistancePickerTs
     },
 
     mixins: [ToolMixin],

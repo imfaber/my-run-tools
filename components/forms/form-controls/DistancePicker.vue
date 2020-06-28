@@ -59,7 +59,7 @@
                             @click.stop.prevent="
                                 confirmDeletion = true;
                                 distanceToDelete = item.id;
-                                closeAutocompleteMenu();
+                                $refs.inputField.$refs.menu.isActive = false;
                             "
                         >
                             <VIcon>mdi-delete</VIcon>
@@ -94,7 +94,10 @@
                 <VCard-text>
                     You are about to delete
                     <strong class="red--text">
-                        {{ getDistanceById(distanceToDelete).name }}
+                        {{
+                            runningEventStore.getEventById(distanceToDelete)
+                                .name
+                        }}
                     </strong>
                 </VCard-text>
 
@@ -135,85 +138,41 @@
     </div>
 </template>
 
-<script>
-import { mapGetters, mapState, mapMutations } from 'vuex';
+<script lang="ts">
+import { Component, Watch, Mixins, Prop } from 'vue-property-decorator';
+import { VAutocomplete } from 'vuetify/lib';
 import parseUnit from 'parse-unit';
-import FormCustomDistanceDialog from '../FormCustomDistanceDialog';
-import ValueDisplay from './ValueDisplay';
+import FormCustomDistanceDialog from '../FormCustomDistanceDialog.vue';
+import ValueDisplay from './ValueDisplay.vue';
+import StoreAccessorMixin from '~/mixins/store-accessor.ts';
+import { RunningEvent } from '~/utils/types';
 import { isValidUnit } from '~/utils/unit-system.ts';
 import { Measure } from '~/utils/types.ts';
+import runningEvents from '~/data/running-events.ts';
 
-export default {
-    components: { ValueDisplay, FormCustomDistanceDialog },
+// HelloWorld class will be a Vue component
+@Component({
+    components: { ValueDisplay, FormCustomDistanceDialog }
+})
+export default class DistancePicker extends Mixins(StoreAccessorMixin) {
+    @Prop({ default: '' }) readonly value: string | undefined;
 
-    props: {
-        /**
-         * The value
-         */
-        value: {
-            type: String,
-            default: ''
-        }
-    },
+    $refs!: {
+        inputField: InstanceType<typeof VAutocomplete>;
+    };
 
-    data() {
-        return {
-            distance: '',
-            searchInput: '',
-            customDistanceDialog: false,
-            confirmDeletion: null,
-            distanceToEdit: null,
-            distanceToDelete: null,
-            snackbar: false,
-            snackbarText: null,
-            snackbarColor: null,
-            isReadOnly: this.$vuetify.breakpoint.xs,
-            isPickerActive: false,
-            inputElement: null
-        };
-    },
-
-    computed: {
-        ...mapState({
-            settingUnitSystem: (state) => state.settings.unitSystem,
-            distancesList: (state) => state.runningEvent.events
-        }),
-
-        ...mapGetters('runningEvent', {
-            getDistanceById: 'getEventById'
-        }),
-
-        distanceDisplay() {
-            const distance = this.getDistanceById(this.distance);
-
-            if (distance) {
-                return `${distance.value} ${distance.unit}`;
-            }
-
-            return '...';
-        },
-
-        keyboardIcon() {
-            if (this.$vuetify.breakpoint.xs && this.isPickerActive) {
-                return this.canEdit ? 'mdi-keyboard-close' : 'mdi-keyboard';
-            }
-            return '';
-        },
-
-        canEdit() {
-            if (!this.isPickerActive) {
-                return true;
-            }
-
-            return !this.$vuetify.breakpoint.xs || !this.isReadOnly;
-        }
-    },
-
-    watch: {
-        value(value) {
-            this.distance = value;
-        }
-    },
+    distance? = this.value;
+    searchInput? = '';
+    customDistanceDialog = false;
+    confirmDeletion: boolean | string = false;
+    distanceToEdit?: RunningEvent;
+    distanceToDelete?: string;
+    snackbar = false;
+    snackbarText? = '';
+    snackbarColor? = '';
+    isReadOnly = this.$vuetify.breakpoint.xs;
+    isPickerActive = false;
+    inputElement?: HTMLInputElement | null;
 
     mounted() {
         if (!this.$refs.inputField) {
@@ -222,124 +181,157 @@ export default {
 
         this.inputElement = this.$refs.inputField.$el.querySelector('input');
 
+        if (!this.inputElement) {
+            return;
+        }
+
         this.$watch('$refs.inputField.$refs.menu.isActive', (value) => {
             this.isPickerActive = value;
 
             if (!value) {
                 this.isReadOnly = true;
-                this.inputElement.blur();
+
+                if (this.inputElement) {
+                    this.inputElement.blur();
+                }
             }
         });
-    },
+    }
 
-    methods: {
-        ...mapMutations({
-            setCustomDistanceValues: 'form/setCustomDistanceValues'
-        }),
+    get distancesList() {
+        return this.runningEventStore.events;
+    }
 
-        openCustomDistanceDialog() {
-            if (!this.distanceToEdit) {
-                const parsedDistance = this.parseDistanceString(
-                    this.searchInput
-                );
+    get distanceDisplay() {
+        const distance = this.runningEventStore.getEventById(this.distance);
 
-                this.distanceToEdit = {
-                    name: this.searchInput,
-                    ...parsedDistance
-                };
-            }
+        if (distance) {
+            return `${distance.value} ${distance.unit}`;
+        }
 
-            this.customDistanceDialog = true;
-            this.$refs.inputField.$refs.menu.isActive = false;
-        },
+        return '...';
+    }
 
-        openMenu() {
-            setTimeout(() => {
-                this.$refs.inputField.$refs.menu.isActive = true;
-            });
-        },
+    get keyboardIcon() {
+        if (this.$vuetify.breakpoint.xs && this.isPickerActive) {
+            return this.canEdit ? 'mdi-keyboard-close' : 'mdi-keyboard';
+        }
+        return '';
+    }
 
-        parseDistanceString(distance) {
-            const parsed = parseUnit(distance);
-            const value = parsed[0];
+    get canEdit() {
+        if (!this.isPickerActive) {
+            return true;
+        }
 
-            if (parsed[1] === 'k') parsed[1] = 'km';
+        return !this.$vuetify.breakpoint.xs || !this.isReadOnly;
+    }
 
-            const unit = isValidUnit(Measure.Length, parsed[1])
-                ? parsed[1]
-                : null;
+    @Watch('value')
+    onChildChanged(value: string) {
+        this.distance = value;
+    }
 
-            return { value, unit };
-        },
+    openCustomDistanceDialog() {
+        if (!this.distanceToEdit) {
+            const parsedDistance = this.parseDistanceString(
+                this.searchInput || ''
+            );
 
-        closeCustomDistanceDialog(data) {
-            this.customDistanceDialog = false;
-            this.distanceToEdit = null;
+            this.distanceToEdit = {
+                name: this.searchInput,
+                ...parsedDistance
+            } as RunningEvent;
+        }
 
-            // Make sure the widget gets updated
-            if (data) {
-                const { isEdit, distance } = data;
-                this.distance = null;
-                setTimeout(() => {
-                    this.distance = distance.id;
-                });
+        this.customDistanceDialog = true;
+        (this.$refs.inputField.$refs.menu as any).isActive = false;
+    }
 
-                this.showSuccessSnackBar(
-                    `Distance <strong>${distance.name}</strong> has been ${
-                        isEdit ? 'updated' : 'added'
-                    }!`
-                );
+    openMenu() {
+        setTimeout(() => {
+            (this.$refs.inputField.$refs.menu as any).isActive = true;
+        });
+    }
 
-                this.onChange();
-            }
-        },
+    parseDistanceString(distance: string) {
+        const parsed = parseUnit(distance);
+        const value = parsed[0];
 
-        onChange() {
-            setTimeout(() => {
-                this.$emit('change', this.distance);
-            });
-        },
+        if (parsed[1] === 'k') parsed[1] = 'km';
 
-        editDistance(distance) {
-            this.distanceToEdit = { ...distance };
+        const unit = isValidUnit(Measure.Length, parsed[1]) ? parsed[1] : null;
+
+        return { value, unit };
+    }
+
+    closeCustomDistanceDialog(data: {
+        isEdit: boolean;
+        distance: RunningEvent;
+    }) {
+        this.customDistanceDialog = false;
+        this.distanceToEdit = undefined;
+        const { isEdit, distance } = data;
+
+        this.distance = distance.id;
+
+        this.showSuccessSnackBar(
+            `Distance <strong>${distance.name}</strong> has been ${
+                isEdit ? 'updated' : 'added'
+            }!`
+        );
+
+        this.onChange();
+    }
+
+    onChange() {
+        setTimeout(() => {
+            this.$emit('change', this.distance);
+        });
+    }
+
+    editDistance(distance: RunningEvent) {
+        this.distanceToEdit = { ...distance };
+        this.openCustomDistanceDialog();
+    }
+
+    deleteDistance() {
+        if (this.confirmDeletion === this.distance) {
+            this.distance = undefined;
+        }
+
+        const event = this.runningEventStore.getEventById(
+            this.distanceToDelete
+        );
+
+        if (!event) {
+            return;
+        }
+
+        this.runningEventStore.delete(event);
+
+        this.confirmDeletion = false;
+        this.distanceToDelete = undefined;
+
+        this.showSuccessSnackBar(
+            `Distance <strong>${event.name}</strong> has been deleted!`
+        );
+
+        this.onChange();
+    }
+
+    showSuccessSnackBar(message: string) {
+        this.snackbarColor = 'green darken-1';
+        this.snackbarText = message;
+        this.snackbar = true;
+    }
+
+    onEnter() {
+        if (!this.distance) {
             this.openCustomDistanceDialog();
-        },
-
-        deleteDistance() {
-            if (this.confirmDeletion === this.distance) {
-                this.distance = null;
-            }
-
-            const { name } = this.getDistanceById(this.distanceToDelete);
-
-            this.$store.dispatch(
-                'runningEvent/deleteEvent',
-                this.distanceToDelete
-            );
-
-            this.confirmDeletion = false;
-            this.distanceToDelete = null;
-
-            this.showSuccessSnackBar(
-                `Distance <strong>${name}</strong> has been deleted!`
-            );
-
-            this.onChange();
-        },
-
-        showSuccessSnackBar(message) {
-            this.snackbarColor = 'green darken-1';
-            this.snackbarText = message;
-            this.snackbar = true;
-        },
-
-        onEnter() {
-            if (!this.distance) {
-                this.openCustomDistanceDialog();
-            }
         }
     }
-};
+}
 </script>
 
 <style lang="scss" scoped>

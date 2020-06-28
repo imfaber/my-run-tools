@@ -54,45 +54,39 @@
     </v-dialog>
 </template>
 
-<script>
-import { UnitSystem } from '~/utils/types.ts';
+<script lang="ts">
+import { Mixins, Component } from 'vue-property-decorator';
+import StoreAccessorMixin from '~/mixins/store-accessor';
+import { UnitSystem, Settings } from '~/utils/types.ts';
 
-export default {
-    data() {
-        return {
-            valid: false,
-            settings: this.$store.state.settings,
-            metricSystem: UnitSystem.Metric,
-            imperialSystem: UnitSystem.Imperial
-        };
-    },
-    computed: {
-        unitSystem: {
-            get() {
-                return this.settings.unitSystem;
-            },
-            set(value) {
-                this.$store.dispatch('settings/set', { unitSystem: value });
-            }
-        },
-        darkTheme: {
-            get() {
-                return this.settings.darkTheme;
-            },
-            set(value) {
-                this.$store.dispatch('settings/set', { darkTheme: value });
-            }
-        },
-        compactNavPanel: {
-            get() {
-                return this.settings.compactNavPanel;
-            },
-            set(value) {
-                this.$store.dispatch('settings/set', {
-                    compactNavPanel: value
-                });
-            }
-        }
+@Component
+export default class FormSettingsDialog extends Mixins(StoreAccessorMixin) {
+    valid = false;
+    metricSystem = UnitSystem.Metric;
+    imperialSystem = UnitSystem.Imperial;
+
+    get unitSystem() {
+        return this.settingsStore.unitSystem;
     }
-};
+
+    set unitSystem(value: UnitSystem) {
+        this.settingsStore.update({ unitSystem: value } as Settings);
+    }
+
+    get darkTheme() {
+        return this.settingsStore.darkTheme;
+    }
+
+    set darkTheme(value: boolean) {
+        this.settingsStore.update({ darkTheme: value } as Settings);
+    }
+
+    get compactNavPanel() {
+        return this.settingsStore.compactNavPanel;
+    }
+
+    set compactNavPanel(value: boolean) {
+        this.settingsStore.update({ compactNavPanel: value } as Settings);
+    }
+}
 </script>

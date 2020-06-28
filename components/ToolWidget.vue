@@ -10,17 +10,12 @@
     </VCol>
 </template>
 
-<script>
-export default {
-    props: {
-        title: {
-            type: String,
-            default: null
-        },
-        icon: {
-            type: String,
-            default: null
-        }
-    }
-};
+<script lang="ts">
+import { Vue, Component, Prop } from 'vue-property-decorator';
+
+@Component
+export default class ToolWidget extends Vue {
+    @Prop(String) readonly title: string | undefined;
+    @Prop(String) readonly icon: string | undefined;
+}
 </script>
