@@ -9,6 +9,7 @@
         "sourceMap": true,
         "strict": true,
         "noEmit": true,
+        "noImplicitAny": false,
         "experimentalDecorators": true,
         "baseUrl": ".",
         "paths": {
@@ -20,7 +21,8 @@
             "@types/node",
             "@types/jest",
             "@nuxt/types",
-            "@nuxtjs/vuetify"
+            "@nuxtjs/vuetify",
+            ""
         ]
     },
     "exclude": ["node_modules", ".nuxt", "dist", "cypress"],
