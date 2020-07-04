@@ -32,134 +32,142 @@
     </ToolSection>
 </template>
 
-<script>
+<script lang="ts">
+import { Component, Mixins } from 'vue-property-decorator';
 import convert from 'convert-units';
-import TimePicker from '~/components/forms/form-controls/TimePicker';
-import DistancePicker from '~/components/forms/form-controls/DistancePicker';
-import ToolWidget from '~/components/ToolWidget';
-import ToolSection from '~/components/ToolSection';
+import TimePicker from '~/components/forms/form-controls/TimePicker.vue';
+import PickerMixin from '~/mixins/picker';
+import DistancePicker from '~/components/forms/form-controls/DistancePicker.vue';
+import ToolWidget from '~/components/ToolWidget.vue';
+import ToolSection from '~/components/ToolSection.vue';
 import { stringToMinutes, minsToDuration } from '~/utils/duration.ts';
-import ToolMixin from '~/mixins/tool';
+import ToolMixin from '~/mixins/tool.ts';
 
-export default {
+@Component({
     components: {
         TimePicker,
         DistancePicker,
         ToolSection,
-        ToolWidget,
-    },
+        ToolWidget
+    }
+})
+export default class PaceTimeCalculator extends Mixins(ToolMixin) {
+    $refs!: {
+        pacePicker: InstanceType<typeof PickerMixin>;
+        timePicker: InstanceType<typeof PickerMixin>;
+    };
 
-    mixins: [ToolMixin],
+    defaultTime = '00:00:00';
+    defaultPace = '00:00';
+    distance? = '';
+    timeDisplay? = '';
+    timeInput? = '';
+    paceDisplay? = '';
+    paceInput? = '';
 
-    data() {
-        return {
-            defaultTime: '00:00:00',
-            defaultPace: '00:00',
-            distance: null,
-            timeDisplay: null,
-            timeInput: null,
-            paceDisplay: null,
-            paceInput: null
-        };
-    },
+    get distanceValue() {
+        const distance = this.$store.getters['runningEvent/getEventById'](
+            this.distance
+        );
 
-    computed: {
-        distanceValue() {
-            const distance = this.$store.getters['runningEvent/getEventById'](
-                this.distance
-            );
-
-            if (!distance) {
-                return;
-            }
-
-            return convert(distance.value)
-                .from(distance.unit)
-                .to(this.isMetricSystem ? 'km' : 'mi');
-        },
-
-        paceSuffix() {
-            this.calc();
-            return this.isMetricSystem ? 'min/km' : 'min/mi';
+        if (!distance) {
+            return;
         }
-    },
 
-    methods: {
-        onDistanceChange(value) {
-            this.distance = value;
+        return convert(distance.value)
+            .from(distance.unit)
+            .to(this.isMetricSystem ? 'km' : 'mi');
+    }
 
-            if (!value) {
-                if (!this.timeInput) {
-                    this.timeDisplay = this.defaultTime;
-                    this.timeInput = null;
-                }
+    get paceSuffix() {
+        this.calc();
+        return this.isMetricSystem ? 'min/km' : 'min/mi';
+    }
 
-                if (!this.paceInput) {
-                    this.paceDisplay = this.defaultPace;
-                    this.paceInput = null;
-                }
+    onDistanceChange(value: string) {
+        this.distance = value;
 
-                return;
+        if (!value) {
+            if (!this.timeInput) {
+                this.timeDisplay = this.defaultTime;
+                this.timeInput = '';
             }
 
-            this.calc();
-        },
-
-        onTimeClear() {
-            this.timeInput = null;
-            this.paceInput = null;
-            this.paceDisplay = this.defaultPace;
-        },
-
-        onPaceClear() {
-            this.paceInput = null;
-            this.timeInput = null;
-            this.timeDisplay = this.defaultTime;
-        },
-
-        calc() {
-            if (!this.distance) {
-                return;
+            if (!this.paceInput) {
+                this.paceDisplay = this.defaultPace;
+                this.paceInput = '';
             }
 
-            if (this.timeInput && !this.paceInput) {
-                this.calcPace(this.timeInput);
-            }
+            return;
+        }
 
-            if (!this.timeInput && this.paceInput) {
-                this.calcTime(this.paceInput);
-            }
-        },
+        this.calc();
+    }
 
-        calcPace(time) {
-            this.$refs.pacePicker.clearInputValue();
-            this.timeInput = time;
-            this.paceInput = null;
+    onTimeClear() {
+        this.timeInput = '';
+        this.paceInput = '';
+        this.paceDisplay = this.defaultPace;
+    }
 
-            if (!this.distance || !time || time === this.defaultTime) {
-                return;
-            }
+    onPaceClear() {
+        this.paceInput = '';
+        this.timeInput = '';
+        this.timeDisplay = this.defaultTime;
+    }
 
-            const timeInMins = stringToMinutes(time);
-            const pace = timeInMins / this.distanceValue;
-            const duration = minsToDuration(pace);
-            this.paceDisplay = duration || this.defaultPace;
-        },
+    calc() {
+        if (!this.distance) {
+            return;
+        }
 
-        calcTime(pace) {
-            this.$refs.timePicker.clearInputValue();
-            this.timeInput = null;
-            this.paceInput = pace;
+        if (this.timeInput && !this.paceInput) {
+            this.calcPace(this.timeInput);
+        }
 
-            if (!this.distance || !pace || pace === this.defaultPace) {
-                return;
-            }
-
-            const paceInMins = stringToMinutes(pace);
-            const time = paceInMins * this.distanceValue;
-            const duration = minsToDuration(time);
-            this.timeDisplay = duration || this.defaultTime;
+        if (!this.timeInput && this.paceInput) {
+            this.calcTime(this.paceInput);
         }
     }
-};
+
+    calcPace(time: string) {
+        this.$refs.pacePicker.clearInputValue();
+        this.timeInput = time;
+        this.paceInput = '';
+
+        if (!this.distance || !time || time === this.defaultTime) {
+            return;
+        }
+
+        const timeInMins = stringToMinutes(time);
+
+        if (!timeInMins || !this.distanceValue) {
+            return;
+        }
+
+        const pace = timeInMins / this.distanceValue;
+        const duration = minsToDuration(pace);
+        this.paceDisplay = duration || this.defaultPace;
+    }
+
+    calcTime(pace: string) {
+        this.$refs.timePicker.clearInputValue();
+        this.timeInput = '';
+        this.paceInput = pace;
+
+        if (!this.distance || !pace || pace === this.defaultPace) {
+            return;
+        }
+
+        const paceInMins = stringToMinutes(pace);
+
+        if (!paceInMins || !this.distanceValue) {
+            return;
+        }
+
+        const time = paceInMins * this.distanceValue;
+        const duration = minsToDuration(time);
+        this.timeDisplay = duration || this.defaultTime;
+    }
+}
 </script>

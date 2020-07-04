@@ -72,62 +72,43 @@
     </div>
 </template>
 
-<script>
-import PickerMixin from '../../../mixins/picker';
+<script lang="ts">
+import { Mixins, Component, Prop } from 'vue-property-decorator';
+import PickerMixin from '~/mixins/picker';
 
-export default {
-    mixins: [PickerMixin],
+@Component
+export default class ToolSection extends Mixins(PickerMixin) {
+    @Prop({ type: [Number, String] }) readonly min: number | string | undefined;
+    @Prop({ type: [Number, String] }) readonly max: number | string | undefined;
 
-    props: {
-        /**
-         * Min value
-         */
-        min: {
-            type: [Number, String],
-            default: 0
-        },
+    defaultDisplayValue = 0;
+    step = 0.1;
 
-        /**
-         * Max value
-         */
-        max: {
-            type: [Number, String],
-            default: 50
-        }
-    },
-
-    data() {
-        return {
-            defaultDisplayValue: 0,
-            step: 0.1
-        };
-    },
-
-    methods: {
-        onSliderStart() {
-            this.step = 1;
-        },
-
-        onSliderEnd() {
-            this.step = 0.1;
-        },
-
-        onSliderClick() {
-            this.computedDisplayValue = Math.round(this.computedDisplayValue);
-            this.computedInputValue = this.computedDisplayValue;
-        },
-
-        increase() {
-            this.computedDisplayValue++;
-            this.onPickerInput();
-        },
-
-        decrease() {
-            this.computedDisplayValue--;
-            this.onPickerInput();
-        }
+    onSliderStart() {
+        this.step = 1;
     }
-};
+
+    onSliderEnd() {
+        this.step = 0.1;
+    }
+
+    onSliderClick() {
+        this.computedDisplayValue = Math.round(
+            parseFloat(this.computedDisplayValue.toString())
+        );
+        this.computedInputValue = this.computedDisplayValue.toString();
+    }
+
+    increase() {
+        (this.computedDisplayValue as number)++;
+        this.onPickerInput();
+    }
+
+    decrease() {
+        (this.computedDisplayValue as number)--;
+        this.onPickerInput();
+    }
+}
 </script>
 
 <style lang="scss" scoped>

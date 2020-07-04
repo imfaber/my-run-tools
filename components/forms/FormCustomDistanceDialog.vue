@@ -63,7 +63,9 @@
                         Cancel
                     </VBtn>
                     <VSpacer />
-                    <VBtn color="primary" @click="onSave">Save</VBtn>
+                    <VBtn color="primary" type="submit" @click="save"
+                        >Save</VBtn
+                    >
                 </VCardActions>
             </VForm>
         </VCard>
@@ -140,7 +142,7 @@ export default class FormCustomDistanceDialog extends Mixins(
         return `${action} custom distance`;
     }
 
-    async onSave() {
+    async save() {
         this.$refs.form.validate();
 
         if (!this.valid) {

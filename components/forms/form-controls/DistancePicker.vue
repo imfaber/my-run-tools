@@ -6,9 +6,10 @@
             :items="distancesList"
             placeholder="Select distance"
             item-value="id"
-            item-text="name"
+            :item-text="(item) => runningEventStore.getEventById(item.id).name"
             no-data-text="Distance not available"
             :search-input.sync="searchInput"
+            no-filter
             attach
             shaped
             solo
@@ -148,9 +149,7 @@ import StoreAccessorMixin from '~/mixins/store-accessor.ts';
 import { RunningEvent } from '~/utils/types';
 import { isValidUnit } from '~/utils/unit-system.ts';
 import { Measure } from '~/utils/types.ts';
-import runningEvents from '~/data/running-events.ts';
 
-// HelloWorld class will be a Vue component
 @Component({
     components: { ValueDisplay, FormCustomDistanceDialog }
 })
@@ -271,8 +270,14 @@ export default class DistancePicker extends Mixins(StoreAccessorMixin) {
     }) {
         this.customDistanceDialog = false;
         this.distanceToEdit = undefined;
+
+        if (!data) {
+            return;
+        }
+
         const { isEdit, distance } = data;
 
+        this.distance = ''; // Invalidate cache
         this.distance = distance.id;
 
         this.showSuccessSnackBar(
@@ -291,7 +296,9 @@ export default class DistancePicker extends Mixins(StoreAccessorMixin) {
     }
 
     editDistance(distance: RunningEvent) {
-        this.distanceToEdit = { ...distance };
+        this.distanceToEdit = {
+            ...this.runningEventStore.getEventById(distance.id)
+        } as RunningEvent;
         this.openCustomDistanceDialog();
     }
 

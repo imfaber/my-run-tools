@@ -43,3 +43,7 @@ export interface RunningEvent {
     unit: UnitAbbreviation;
     isCustom?: boolean;
 }
+
+export type unitLength = 'm' | 'km' | 'yd' | 'mi';
+
+export type unitPace = 's/m' | 'min/km' | 's/ft' | 'min/mi';

@@ -45,11 +45,11 @@ export function stringToMinutes(str: string): number | undefined | null {
     return parseDuration(durationStr, 'minute');
 }
 
-export function formatDurationString(str: string): string | undefined {
+export function formatDurationString(str: string): string {
     const duration = stringToDuration(str);
 
     if (!duration) {
-        return;
+        return '';
     }
 
     return durationToString(duration);

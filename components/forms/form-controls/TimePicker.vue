@@ -71,101 +71,95 @@
     </div>
 </template>
 
-<script>
-import PickerMixin from '../../../mixins/picker';
+<script lang="ts">
+import { Mixins, Component, Prop } from 'vue-property-decorator';
+import { VTextField } from 'vuetify/lib';
+import PickerMixin from '~/mixins/picker';
 import {
     formatDurationString,
     isValidDurationString
 } from '~/utils/duration.ts';
 
-export default {
-    mixins: [PickerMixin],
+@Component
+export default class ToolSection extends Mixins(PickerMixin) {
+    @Prop({ type: Boolean, default: false }) readonly useHours!: boolean;
 
-    props: {
-        /**
-         * Whether to use hours or not
-         */
-        useHours: {
-            type: Boolean,
-            default: false
+    $refs!: {
+        inputField: InstanceType<typeof VTextField>;
+    };
+
+    defaultDisplayValue = this.useHours ? '00:00:00' : '00:00';
+    loading = false;
+
+    get formattedDisplayValue() {
+        return this.getFormattedValue(this.computedDisplayValue.toString());
+    }
+
+    onInput(value: string) {
+        if (value && !isValidDurationString(value)) {
+            return;
         }
-    },
 
-    data() {
-        return {
-            defaultDisplayValue: this.useHours ? '00:00:00' : '00:00',
-            loading: false
-        };
-    },
-    computed: {
-        formattedDisplayValue() {
-            return this.getFormattedValue(this.computedDisplayValue);
-        }
-    },
+        this.computedDisplayValue = value
+            ? formatDurationString(value)
+            : this.defaultDisplayValue;
+    }
 
-    methods: {
-        onInput(value) {
-            if (value && !isValidDurationString(value)) {
-                return;
-            }
-
-            this.computedDisplayValue = value
-                ? formatDurationString(value)
-                : this.defaultDisplayValue;
-        },
-
-        onBlur() {
-            if (
-                this.computedInputValue &&
-                !isValidDurationString(this.computedInputValue)
-            ) {
-                this.onPickerInput();
-            }
-        },
-
-        onPickerInput() {
-            this.computedInputValue = this.getFormattedValue(
-                this.computedDisplayValue
-            );
-        },
-
-        async onChange() {
-            await this.$nextTick();
-
-            if (
-                isValidDurationString(this.computedDisplayValue) &&
-                this.computedDisplayValue !== this.defaultDisplayValue
-            ) {
-                this.$emit('change', this.computedDisplayValue);
-            }
-        },
-
-        async onFocus() {
-            this.isPickerActive = true;
-            this.loading = true;
-            this.$refs.inputField.$el.querySelector('input').select();
-
-            await this.$nextTick();
-
-            if (!this.useHours && this.$refs.picker) {
-                this.$refs.picker.selectingHour = false;
-                this.$refs.picker.selectingMinute = true;
-            }
-
-            setTimeout(() => {
-                this.isPickerReady = true;
-            }, 500);
-
-            setTimeout(() => {
-                this.loading = false;
-            }, 1000);
-        },
-
-        getFormattedValue(value) {
-            return this.useHours ? value : value.slice(-5);
+    onBlur() {
+        if (
+            this.computedInputValue &&
+            !isValidDurationString(this.computedInputValue)
+        ) {
+            this.onPickerInput();
         }
     }
-};
+
+    onPickerInput() {
+        this.computedInputValue = this.getFormattedValue(
+            this.computedDisplayValue.toString()
+        );
+    }
+
+    async onChange() {
+        await this.$nextTick();
+
+        if (
+            isValidDurationString(this.computedDisplayValue.toString()) &&
+            this.computedDisplayValue !== this.defaultDisplayValue
+        ) {
+            this.$emit('change', this.computedDisplayValue);
+        }
+    }
+
+    async onFocus() {
+        this.isPickerActive = true;
+        this.loading = true;
+
+        const inputElem = this.$refs.inputField.$el.querySelector('input');
+        if (inputElem) {
+            inputElem.select();
+        }
+
+        await this.$nextTick();
+
+        if (!this.useHours && 'picker' in this.$refs) {
+            (this.$refs as any).picker.selectingHour = false;
+            (this.$refs as any).picker.selectingMinute = true;
+        }
+
+        setTimeout(() => {
+            this.isPickerReady = true;
+        }, 500);
+
+        setTimeout(() => {
+            this.loading = false;
+        }, 1000);
+    }
+
+    getFormattedValue(value: string) {
+        return this.useHours ? value : value.slice(-5);
+    }
+}
 </script>
 
 <style lang="scss" scoped>

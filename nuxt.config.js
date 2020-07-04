@@ -9,7 +9,8 @@ export default {
             name: title,
             short_name: title,
             lang: 'en-US',
-            categories: ['run', 'calcultor', 'converter']
+            categories: ['run', 'calcultor', 'converter'],
+            theme_color: '#2196F3'
         }
     },
     /*

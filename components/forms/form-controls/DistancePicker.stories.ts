@@ -1,5 +1,5 @@
 import DistancePicker from './DistancePicker.vue';
-import store from '~/.storybook/store';
+import store from '~/.storybook/store.js';
 
 export default {
     title: 'Pickers',
@@ -12,5 +12,8 @@ export default {
 export const distancePicker = () => ({
     components: { DistancePicker },
     store,
+    created() {
+        store.commit('runningEvent/update', []);
+    },
     template: '<DistancePicker />'
 });

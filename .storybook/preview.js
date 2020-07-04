@@ -2,12 +2,11 @@ import { addDecorator, addParameters } from '@storybook/vue';
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport';
 import { withInfo } from 'storybook-addon-vue-info';
 import Vue from 'vue';
-import Vuex from 'vuex';
 import Vuetify from 'vuetify';
+import store from '~/.storybook/store.js';
 import 'vuetify/dist/vuetify.min.css';
 
 Vue.use(Vuetify);
-Vue.use(Vuex);
 
 // Global decorators
 addDecorator(() => ({
@@ -28,6 +27,7 @@ addDecorator(() => ({
             }
         }
     }),
+    store,
     template: '<v-app><div class="pa-6"><story/></div></v-app>'
 }));
 addDecorator(withInfo);

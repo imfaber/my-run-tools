@@ -6,25 +6,18 @@
     </div>
 </template>
 
-<script>
-export default {
-    props: {
-        value: {
-            type: [String, Number],
-            default: ''
-        },
-        suffix: {
-            type: String,
-            default: ''
-        }
-    },
+<script lang="ts">
+import { Vue, Component, Prop } from 'vue-property-decorator';
 
-    methods: {
-        onClick() {
-            this.$emit('click');
-        }
+@Component
+export default class ValueDisplay extends Vue {
+    @Prop({ default: '' }) readonly value!: string | number;
+    @Prop({ default: '' }) readonly suffix!: string;
+
+    onClick() {
+        this.$emit('click');
     }
-};
+}
 </script>
 
 <style lang="scss" scoped>
