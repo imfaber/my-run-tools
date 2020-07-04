@@ -6,10 +6,9 @@
             :items="distancesList"
             placeholder="Select distance"
             item-value="id"
-            :item-text="(item) => runningEventStore.getEventById(item.id).name"
+            item-text="name"
             no-data-text="Distance not available"
             :search-input.sync="searchInput"
-            no-filter
             attach
             shaped
             solo
@@ -279,6 +278,7 @@ export default class DistancePicker extends Mixins(StoreAccessorMixin) {
 
         this.distance = ''; // Invalidate cache
         this.distance = distance.id;
+        this.searchInput = distance.name;
 
         this.showSuccessSnackBar(
             `Distance <strong>${distance.name}</strong> has been ${

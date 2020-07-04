@@ -18,6 +18,7 @@
             @click:clear.stop.prevent="onClear"
             @input="onInput"
             @focus="onFocus"
+            @blur="onBlur"
             @keyup.native.enter="onClickAway"
         />
 
@@ -78,8 +79,11 @@ import PickerMixin from '~/mixins/picker';
 
 @Component
 export default class ToolSection extends Mixins(PickerMixin) {
-    @Prop({ type: [Number, String] }) readonly min: number | string | undefined;
-    @Prop({ type: [Number, String] }) readonly max: number | string | undefined;
+    @Prop({ type: [Number, String], default: 0 })
+    readonly min!: number | string;
+
+    @Prop({ type: [Number, String], default: 100 })
+    readonly max!: number | string;
 
     defaultDisplayValue = 0;
     step = 0.1;
@@ -97,6 +101,16 @@ export default class ToolSection extends Mixins(PickerMixin) {
             parseFloat(this.computedDisplayValue.toString())
         );
         this.computedInputValue = this.computedDisplayValue.toString();
+    }
+
+    onBlur() {
+        if (parseFloat(this.computedInputValue) < this.min) {
+            this.computedInputValue = this.min.toString();
+        }
+
+        if (parseFloat(this.computedInputValue) > this.max) {
+            this.computedInputValue = this.max.toString();
+        }
     }
 
     increase() {
