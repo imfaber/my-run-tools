@@ -57,7 +57,7 @@
                         >
                     </VListItemContent>
                 </VListItem>
-<!--
+                <!--
                 <FormSettingsDialog
                     v-model="settingsDialog"
                     persistent
