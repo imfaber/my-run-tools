@@ -21,8 +21,7 @@
             "@types/node",
             "@types/jest",
             "@nuxt/types",
-            "@nuxtjs/vuetify",
-            ""
+            "@nuxtjs/vuetify"
         ]
     },
     "exclude": ["node_modules", ".nuxt", "dist", "cypress"],

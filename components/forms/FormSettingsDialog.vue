@@ -57,7 +57,7 @@
 <script lang="ts">
 import { Mixins, Component } from 'vue-property-decorator';
 import StoreAccessorMixin from '~/mixins/store-accessor';
-import { UnitSystem, Settings } from '~/utils/types.ts';
+import { UnitSystem, SettingsOptions } from '~/utils/types.ts';
 
 @Component
 export default class FormSettingsDialog extends Mixins(StoreAccessorMixin) {
@@ -70,7 +70,7 @@ export default class FormSettingsDialog extends Mixins(StoreAccessorMixin) {
     }
 
     set unitSystem(value: UnitSystem) {
-        this.settingsStore.update({ unitSystem: value } as Settings);
+        this.settingsStore.update({ unitSystem: value } as SettingsOptions);
     }
 
     get darkTheme() {
@@ -78,7 +78,7 @@ export default class FormSettingsDialog extends Mixins(StoreAccessorMixin) {
     }
 
     set darkTheme(value: boolean) {
-        this.settingsStore.update({ darkTheme: value } as Settings);
+        this.settingsStore.update({ darkTheme: value } as SettingsOptions);
     }
 
     get compactNavPanel() {
@@ -86,7 +86,9 @@ export default class FormSettingsDialog extends Mixins(StoreAccessorMixin) {
     }
 
     set compactNavPanel(value: boolean) {
-        this.settingsStore.update({ compactNavPanel: value } as Settings);
+        this.settingsStore.update({
+            compactNavPanel: value
+        } as SettingsOptions);
     }
 }
 </script>

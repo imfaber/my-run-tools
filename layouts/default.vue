@@ -57,13 +57,13 @@
                         >
                     </VListItemContent>
                 </VListItem>
-                <!--
+
                 <FormSettingsDialog
                     v-model="settingsDialog"
                     persistent
                     max-width="350px"
                     @close="closeSettingsDialog"
-                /> -->
+                />
             </template>
         </VNavigationDrawer>
 
@@ -106,11 +106,11 @@
 </template>
 
 <script>
-// import FormSettingsDialog from '~/components/forms/FormSettingsDialog';
+import FormSettingsDialog from '~/components/forms/FormSettingsDialog';
 import tools from '~/data/tools.ts';
 
 export default {
-    // components: { FormSettingsDialog },
+    components: { FormSettingsDialog },
     data() {
         return {
             drawer: !this.$vuetify.breakpoint.mdAndDown,

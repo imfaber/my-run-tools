@@ -1,18 +1,18 @@
 import { Module, Mutation, VuexModule } from 'vuex-module-decorators';
-import { UnitSystem, Settings } from '~/utils/types';
+import { UnitSystem, SettingsOptions } from '~/utils/types';
 
 @Module({
-    name: 'setting',
+    name: 'settings',
     namespaced: true,
     stateFactory: true
 })
-export default class Setting extends VuexModule {
+export default class Settings extends VuexModule {
     unitSystem = UnitSystem.Metric;
     darkTheme = false;
     compactNavPanel = true;
 
     @Mutation
-    update(settings: Settings) {
+    update(settings: SettingsOptions) {
         Object.assign(this, settings);
     }
 }

@@ -24,7 +24,7 @@ export interface Duration {
     seconds: number;
 }
 
-export interface Settings {
+export interface SettingsOptions {
     unitSystem: UnitSystem;
     darkTheme: boolean;
     compactNavPanel: boolean;
