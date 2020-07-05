@@ -1,5 +1,5 @@
 <template>
-    <div class="distance-picker">
+    <div v-if="upToDate" class="distance-picker">
         <VAutocomplete
             ref="inputField"
             v-model="distance"
@@ -162,6 +162,7 @@ export default class DistancePicker extends Mixins(StoreAccessorMixin) {
     distance? = this.value;
     searchInput? = '';
     customDistanceDialog = false;
+    upToDate = true;
     confirmDeletion: boolean | string = false;
     distanceToEdit?: RunningEvent;
     distanceToDelete?: string;
@@ -279,6 +280,10 @@ export default class DistancePicker extends Mixins(StoreAccessorMixin) {
         this.distance = ''; // Invalidate cache
         this.distance = distance.id;
         this.searchInput = distance.name;
+        this.upToDate = false;
+        setTimeout(() => {
+            this.upToDate = true;
+        });
 
         this.showSuccessSnackBar(
             `Distance <strong>${distance.name}</strong> has been ${
