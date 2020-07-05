@@ -17,7 +17,7 @@
             <v-row align="center" justify="center">
                 <v-col cols="12" class="text-center mb-8 wrapper">
                     <h2 class="font-weight-regular mb-3">
-                        Found a bug or have a sugestion?
+                        Found a bug or have a suggestion?
                     </h2>
 
                     <p class="font-weight-light title">

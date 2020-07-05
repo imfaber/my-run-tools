@@ -42,6 +42,20 @@
                         />
                     </VListItemContent>
                 </VListItem>
+
+                <VListItem
+                    href="https://github.com/imfaber/my-run-tools"
+                    target="_blank"
+                >
+                    <VListItemAction>
+                        <VIcon color="white">mdi-github</VIcon>
+                    </VListItemAction>
+                    <VListItemContent>
+                        <VListItemTitle class="white--text">
+                            Go to source code
+                        </VListItemTitle>
+                    </VListItemContent>
+                </VListItem>
             </VList>
 
             <template v-slot:append>
@@ -75,16 +89,6 @@
                     MyRun<span class="font-weight-light">Tools</span>
                 </NLink>
             </VToolbarTitle>
-
-            <VSpacer />
-
-            <a
-                href="https://github.com/imfaber/my-run-tools"
-                target="_blank"
-                class="navbar-link"
-            >
-                <VIcon color="white" large>mdi-github</VIcon>
-            </a>
         </VAppBar>
 
         <VContent>
