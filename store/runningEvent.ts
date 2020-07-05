@@ -25,6 +25,7 @@ export default class RunningEvent extends VuexModule {
     @Mutation
     editEvent({ event, index }: { event: Event; index: number }) {
         this.events[index] = event;
+        this.events = [...this.events];
     }
 
     @Mutation
