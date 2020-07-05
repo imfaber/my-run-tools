@@ -81,7 +81,7 @@ import {
 } from '~/utils/duration.ts';
 
 @Component
-export default class ToolSection extends Mixins(PickerMixin) {
+export default class TimePicker extends Mixins(PickerMixin) {
     @Prop({ type: Boolean, default: false }) readonly useHours!: boolean;
 
     $refs!: {

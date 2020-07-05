@@ -78,7 +78,7 @@ import { Mixins, Component, Prop } from 'vue-property-decorator';
 import PickerMixin from '~/mixins/picker';
 
 @Component
-export default class ToolSection extends Mixins(PickerMixin) {
+export default class NumberPicker extends Mixins(PickerMixin) {
     @Prop({ type: [Number, String], default: 0 })
     readonly min!: number | string;
 

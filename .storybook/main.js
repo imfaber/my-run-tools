@@ -24,7 +24,7 @@ module.exports = {
 
         // Typescript
         config.module.rules.push({
-            test: /\.tsx?$/,
+            test: /\.(ts|tsx)$/,
             exclude: /node_modules/,
             use: [
                 {
@@ -36,6 +36,7 @@ module.exports = {
                 }
             ]
         });
+        config.resolve.extensions.push('.ts', '.tsx');
 
         // Style
         config.module.rules.push({

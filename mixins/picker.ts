@@ -2,8 +2,8 @@ import { directive as onClickaway } from 'vue-clickaway';
 import { Framework } from 'vuetify';
 import { VTextField } from 'vuetify/lib';
 import { Component, Prop, Watch, Mixins } from 'vue-property-decorator';
-import ValueDisplay from '../components/forms/form-controls/ValueDisplay.vue';
 import StoreAccessorMixin from './store-accessor';
+import ValueDisplay from '~/components/forms/form-controls/ValueDisplay.vue';
 
 @Component({
     inheritAttrs: false,
