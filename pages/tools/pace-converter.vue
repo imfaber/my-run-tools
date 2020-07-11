@@ -56,7 +56,8 @@ import ToolSection from '~/components/ToolSection.vue';
 import { stringToMinutes, minsToDuration } from '~/utils/duration.ts';
 import ToolMixin from '~/mixins/tool';
 import PickerMixin from '~/mixins/picker';
-import { unitLength, unitPace } from '~/utils/types';
+import { unitPace } from '~/utils/types';
+import { convertLength } from '~/utils/unit-system';
 
 @Component({
     components: {
@@ -94,15 +95,6 @@ export default class PaceTimeCalculator extends Mixins(ToolMixin) {
         return minsToDuration(convertedPaceMins);
     }
 
-    convertSpeed(value: number, from: unitLength, to: unitLength): number {
-        return parseFloat(
-            convert(value)
-                .from(from)
-                .to(to)
-                .toFixed(1)
-        );
-    }
-
     paceToSpeed(value: string): number | undefined {
         const mins = stringToMinutes(value);
 
@@ -136,7 +128,7 @@ export default class PaceTimeCalculator extends Mixins(ToolMixin) {
     }
 
     onMetricSpeedChange(value: number) {
-        this.imperialSpeed = this.convertSpeed(value, 'km', 'mi');
+        this.imperialSpeed = convertLength(value, 'km', 'mi');
         this.metricPace = this.speedToPace(value);
         this.imperialPace = this.speedToPace(this.imperialSpeed);
         this.$refs.imperialSpeed.clearInputValue();
@@ -145,7 +137,7 @@ export default class PaceTimeCalculator extends Mixins(ToolMixin) {
     }
 
     onImperialSpeedChange(value: number) {
-        this.metricSpeed = this.convertSpeed(value, 'mi', 'km');
+        this.metricSpeed = convertLength(value, 'mi', 'km');
         this.imperialPace = this.speedToPace(value);
         this.metricPace = this.speedToPace(this.metricSpeed);
         this.$refs.metricSpeed.clearInputValue();
@@ -164,99 +156,4 @@ export default class PaceTimeCalculator extends Mixins(ToolMixin) {
         this.metricPace = this.defaultPace;
     }
 }
-
-// export default {
-//     components: {
-//         TimePicker,
-//         NumberPicker,
-//         ToolSection,
-//         ToolWidget
-//     },
-
-//     mixins: [ToolMixin],
-
-//     data() {
-//         return {
-//             defaultPace: '00:00',
-//             defaultSpeed: 0,
-//             imperialSpeed: null,
-//             metricSpeed: null,
-//             imperialPace: null,
-//             metricPace: null
-//         };
-//     },
-
-//     methods: {
-//         convertPace(value, from, to) {
-//             const timeInMins = stringToMinutes(value);
-
-//             const convertedPaceMins = convert(timeInMins)
-//                 .from(from)
-//                 .to(to);
-//             return minsToDuration(convertedPaceMins);
-//         },
-
-//         convertSpeed(value, from, to) {
-//             return convert(value)
-//                 .from(from)
-//                 .to(to)
-//                 .toFixed(1);
-//         },
-
-//         paceToSpeed(value) {
-//             return (60 / stringToMinutes(value)).toFixed(1);
-//         },
-
-//         speedToPace(value) {
-//             return minsToDuration(3600 / (60 * value));
-//         },
-
-//         onImperialPaceChange(value) {
-//             this.metricPace = this.convertPace(value, 'min/mi', 'min/km');
-//             this.metricSpeed = this.paceToSpeed(this.metricPace);
-//             this.imperialSpeed = this.paceToSpeed(value);
-//             this.$refs.imperialSpeed.clearInputValue();
-//             this.$refs.metricSpeed.clearInputValue();
-//             this.$refs.metricPace.clearInputValue();
-//         },
-
-//         onMetricPaceChange(value) {
-//             this.imperialPace = this.convertPace(value, 'min/km', 'min/mi');
-//             this.metricSpeed = this.paceToSpeed(value);
-//             this.imperialSpeed = this.paceToSpeed(this.imperialPace);
-//             this.$refs.imperialSpeed.clearInputValue();
-//             this.$refs.metricSpeed.clearInputValue();
-//             this.$refs.imperialPace.clearInputValue();
-//         },
-
-//         onMetricSpeedChange(value) {
-//             this.imperialSpeed = this.convertSpeed(value, 'km', 'mi');
-//             this.metricPace = this.speedToPace(value);
-//             this.imperialPace = this.speedToPace(this.imperialSpeed);
-//             this.$refs.imperialSpeed.clearInputValue();
-//             this.$refs.imperialPace.clearInputValue();
-//             this.$refs.metricPace.clearInputValue();
-//         },
-
-//         onImperialSpeedChange(value) {
-//             this.metricSpeed = this.convertSpeed(value, 'mi', 'km');
-//             this.imperialPace = this.speedToPace(value);
-//             this.metricPace = this.speedToPace(this.metricSpeed);
-//             this.$refs.metricSpeed.clearInputValue();
-//             this.$refs.imperialPace.clearInputValue();
-//             this.$refs.metricPace.clearInputValue();
-//         },
-
-//         onClear() {
-//             this.$refs.imperialSpeed.clearInputValue();
-//             this.$refs.metricSpeed.clearInputValue();
-//             this.$refs.imperialPace.clearInputValue();
-//             this.$refs.metricPace.clearInputValue();
-//             this.imperialSpeed = this.defaultSpeed;
-//             this.metricSpeed = this.defaultSpeed;
-//             this.imperialPace = this.defaultPace;
-//             this.metricPace = this.defaultPace;
-//         }
-//     }
-// };
 </script>

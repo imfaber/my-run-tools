@@ -1,5 +1,5 @@
 import convert from 'convert-units';
-import { UnitAbbreviation, UnitSystem, Measure } from './types';
+import { UnitAbbreviation, UnitSystem, Measure, unitLength } from './types';
 
 export const lenghtUnits = Object.freeze([
     UnitAbbreviation.Meter,
@@ -46,6 +46,19 @@ export function getImperialUnits(measure: Measure) {
 
 export function isValidUnit(measure: Measure, abbr: string): boolean {
     return (units as any)[measure].includes(abbr);
+}
+
+export function convertLength(
+    value: number,
+    from: unitLength,
+    to: unitLength
+): number {
+    return parseFloat(
+        convert(value)
+            .from(from)
+            .to(to)
+            .toFixed(1)
+    );
 }
 
 export default {

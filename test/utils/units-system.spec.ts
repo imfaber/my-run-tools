@@ -1,4 +1,4 @@
-import { getUnits } from '~/utils/unit-system.ts';
+import { getUnits, convertLength } from '~/utils/unit-system.ts';
 import { Measure, UnitSystem } from '~/utils/types.ts';
 
 describe('Unit System', () => {
@@ -31,5 +31,10 @@ describe('Unit System', () => {
                 system: 'metric'
             }
         ]);
+    });
+
+    test('convertLength() converts units from a unit to another', () => {
+        expect(convertLength(1000, 'm', 'km')).toBe(1);
+        expect(convertLength(1, 'km', 'm')).toBe(1000);
     });
 });
