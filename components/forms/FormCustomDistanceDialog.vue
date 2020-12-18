@@ -31,7 +31,7 @@
                                 :rules="distanceRules"
                                 autocomplete="off"
                             >
-                                <template v-slot:append>
+                                <template #append>
                                     <VSelect
                                         v-model="localDistance.unit"
                                         :items="unitsList"

@@ -58,7 +58,7 @@
                 </VListItem>
             </VList>
 
-            <template v-slot:append>
+            <template #append>
                 <VDivider />
 
                 <VListItem link @click="settingsDialog = true">

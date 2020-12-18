@@ -20,7 +20,7 @@
             @keyup.native.enter="onEnter"
             @change="onChange"
         >
-            <template v-slot:prepend-item>
+            <template #prepend-item>
                 <VListItemContent class="pt-0 pb-0">
                     <VListItemTitle>
                         <VBtn
@@ -36,7 +36,7 @@
                 </VListItemContent>
             </template>
 
-            <template v-slot:item="{ item }">
+            <template #item="{ item }">
                 <VListItemContent>
                     <VListItemTitle>
                         {{ item.name }}

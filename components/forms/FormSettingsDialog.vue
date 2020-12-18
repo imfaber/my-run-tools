@@ -9,20 +9,20 @@
                 <v-card-text>
                     <div>
                         <v-radio-group v-model="unitSystem">
-                            <template v-slot:label>
+                            <template #label>
                                 <div>
                                     Your unit system
                                 </div>
                             </template>
                             <v-radio :value="metricSystem">
-                                <template v-slot:label>
+                                <template #label>
                                     <div>
                                         Metric
                                     </div>
                                 </template>
                             </v-radio>
                             <v-radio :value="imperialSystem">
-                                <template v-slot:label>
+                                <template #label>
                                     <div>
                                         Imperial
                                     </div>
