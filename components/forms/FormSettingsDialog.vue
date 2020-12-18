@@ -55,38 +55,37 @@
 </template>
 
 <script lang="ts">
-import { Mixins, Component } from 'vue-property-decorator';
-import StoreAccessorMixin from '~/mixins/store-accessor';
+import { Vue, Component } from 'vue-property-decorator';
 import { UnitSystem, SettingsOptions } from '~/utils/types.ts';
 
 @Component
-export default class FormSettingsDialog extends Mixins(StoreAccessorMixin) {
+export default class FormSettingsDialog extends Vue {
     valid = false;
     metricSystem = UnitSystem.Metric;
     imperialSystem = UnitSystem.Imperial;
 
     get unitSystem() {
-        return this.settingsStore.unitSystem;
+        return this.$settingsStore.unitSystem;
     }
 
     set unitSystem(value: UnitSystem) {
-        this.settingsStore.update({ unitSystem: value } as SettingsOptions);
+        this.$settingsStore.update({ unitSystem: value } as SettingsOptions);
     }
 
     get darkTheme() {
-        return this.settingsStore.darkTheme;
+        return this.$settingsStore.darkTheme;
     }
 
     set darkTheme(value: boolean) {
-        this.settingsStore.update({ darkTheme: value } as SettingsOptions);
+        this.$settingsStore.update({ darkTheme: value } as SettingsOptions);
     }
 
     get compactNavPanel() {
-        return this.settingsStore.compactNavPanel;
+        return this.$settingsStore.compactNavPanel;
     }
 
     set compactNavPanel(value: boolean) {
-        this.settingsStore.update({
+        this.$settingsStore.update({
             compactNavPanel: value
         } as SettingsOptions);
     }

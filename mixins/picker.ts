@@ -1,18 +1,15 @@
 import { directive as onClickaway } from 'vue-clickaway';
 import { Framework } from 'vuetify';
 import { VTextField } from 'vuetify/lib';
-import { Component, Prop, Watch, Mixins } from 'vue-property-decorator';
-import StoreAccessorMixin from './store-accessor';
-import ValueDisplay from '~/components/forms/form-controls/ValueDisplay.vue';
+import { Component, Prop, Watch, Vue } from 'vue-property-decorator';
 
 @Component({
     inheritAttrs: false,
-    components: { ValueDisplay },
     directives: {
         onClickaway
     }
 })
-export default class PickerMixin extends Mixins(StoreAccessorMixin) {
+export default class PickerMixin extends Vue {
     /**
      * The display value
      */

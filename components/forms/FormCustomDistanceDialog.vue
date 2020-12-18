@@ -73,8 +73,7 @@
 </template>
 
 <script lang="ts">
-import { Mixins, Component, Prop } from 'vue-property-decorator';
-import StoreAccessorMixin from '~/mixins/store-accessor';
+import { Vue, Component, Prop } from 'vue-property-decorator';
 import { RunningEvent } from '~/utils/types';
 import { getUnits } from '~/utils/unit-system.ts';
 import { Measure } from '~/utils/types.ts';
@@ -87,9 +86,7 @@ const distanceDefault = {
 };
 
 @Component
-export default class FormCustomDistanceDialog extends Mixins(
-    StoreAccessorMixin
-) {
+export default class FormCustomDistanceDialog extends Vue {
     @Prop({ default: () => distanceDefault })
     readonly distance!: RunningEvent;
 
@@ -103,13 +100,12 @@ export default class FormCustomDistanceDialog extends Mixins(
     valid = false;
     error = null;
 
-    unitsList = getUnits(
-        Measure.Length,
-        this.$store.state.settings.unitSystem
-    ).map((x) => ({
-        text: x.plural,
-        value: x.abbr
-    }));
+    unitsList = getUnits(Measure.Length, this.$settingsStore.unitSystem).map(
+        (x) => ({
+            text: x.plural,
+            value: x.abbr
+        })
+    );
 
     localDistance = {
         ...distanceDefault,
@@ -149,7 +145,7 @@ export default class FormCustomDistanceDialog extends Mixins(
             return;
         }
 
-        const distance = await this.runningEventStore[
+        const distance = await this.$runningEventStore[
             this.isEdit ? 'edit' : 'add'
         ](this.localDistance);
 

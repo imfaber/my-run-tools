@@ -3,7 +3,7 @@ import colors from 'vuetify/es5/util/colors';
 const title = 'MyRun.Tools';
 
 export default {
-    mode: 'universal',
+    components: true,
     pwa: {
         manifest: {
             name: title,
@@ -44,7 +44,10 @@ export default {
     /*
      ** Plugins to load before mounting the App
      */
-    plugins: [{ src: '~/plugins/vuex-persist', ssr: false }],
+    plugins: [
+        { src: '~/plugins/vuex-persist', ssr: false },
+        { src: '~/plugins/store-accessor' }
+    ],
     /*
      ** Nuxt.js dev-modules
      */
@@ -58,11 +61,11 @@ export default {
      ** Nuxt.js modules
      */
     modules: [
-        // Doc: https://axios.nuxtjs.org/usage
-        '@nuxtjs/axios',
         '@nuxtjs/pwa',
+        // Doc: https://axios.nuxtjs.org/usage
+        // '@nuxtjs/axios',
         // Doc: https://github.com/nuxt-community/dotenv-module
-        '@nuxtjs/dotenv'
+        // '@nuxtjs/dotenv'
     ],
     /*
      ** Axios module configuration

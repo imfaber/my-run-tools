@@ -91,30 +91,26 @@
             </VToolbarTitle>
         </VAppBar>
 
-        <VContent>
+        <VMain>
             <VContainer class="main-container py-12" fluid>
                 <Nuxt />
             </VContainer>
 
             <div class="text-center copy">
-                <small
-                    >&copy; {{ new Date().getFullYear() }} - Made with ❤ by
+                <small>
+                    &copy; {{ new Date().getFullYear() }} - Made with ❤ by
                     Fabrizio Meinero -
-                    <a href="https://imfaber.me/" target="_blank"
-                        >Imfaber</a
-                    ></small
-                >
+                    <a href="https://imfaber.me/" target="_blank">Imfaber</a>
+                </small>
             </div>
-        </VContent>
+        </VMain>
     </VApp>
 </template>
 
 <script>
-import FormSettingsDialog from '~/components/forms/FormSettingsDialog';
 import tools from '~/data/tools.ts';
 
 export default {
-    components: { FormSettingsDialog },
     data() {
         return {
             drawer: !this.$vuetify.breakpoint.mdAndDown,

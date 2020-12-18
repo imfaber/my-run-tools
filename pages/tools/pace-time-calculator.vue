@@ -35,22 +35,11 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator';
 import convert from 'convert-units';
-import TimePicker from '~/components/forms/form-controls/TimePicker.vue';
 import PickerMixin from '~/mixins/picker';
-import DistancePicker from '~/components/forms/form-controls/DistancePicker.vue';
-import ToolWidget from '~/components/ToolWidget.vue';
-import ToolSection from '~/components/ToolSection.vue';
 import { stringToMinutes, minsToDuration } from '~/utils/duration.ts';
 import ToolMixin from '~/mixins/tool.ts';
 
-@Component({
-    components: {
-        TimePicker,
-        DistancePicker,
-        ToolSection,
-        ToolWidget
-    }
-})
+@Component
 export default class PaceTimeCalculator extends Mixins(ToolMixin) {
     $refs!: {
         pacePicker: InstanceType<typeof PickerMixin>;

@@ -59,15 +59,14 @@
 </template>
 
 <script lang="ts">
-import { Mixins, Component, Prop } from 'vue-property-decorator';
-import StoreAccessorMixin from '~/mixins/store-accessor.ts';
+import { Vue, Component, Prop } from 'vue-property-decorator';
 
 @Component
-export default class YourComponent extends Mixins(StoreAccessorMixin) {
+export default class YourComponent extends Vue {
     @Prop({ default: true }) readonly autocomplete!: boolean;
 
     get tools() {
-        return this.toolStore.list;
+        return this.$toolStore.list;
     }
 
     get value() {

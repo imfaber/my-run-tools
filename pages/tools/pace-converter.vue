@@ -49,24 +49,13 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator';
 import convert from 'convert-units';
-import TimePicker from '~/components/forms/form-controls/TimePicker.vue';
-import NumberPicker from '~/components/forms/form-controls/NumberPicker.vue';
-import ToolWidget from '~/components/ToolWidget.vue';
-import ToolSection from '~/components/ToolSection.vue';
 import { stringToMinutes, minsToDuration } from '~/utils/duration.ts';
 import ToolMixin from '~/mixins/tool';
 import PickerMixin from '~/mixins/picker';
 import { unitPace } from '~/utils/types';
 import { convertLength } from '~/utils/unit-system';
 
-@Component({
-    components: {
-        TimePicker,
-        NumberPicker,
-        ToolSection,
-        ToolWidget
-    }
-})
+@Component
 export default class PaceTimeCalculator extends Mixins(ToolMixin) {
     $refs!: {
         imperialSpeed: InstanceType<typeof PickerMixin>;

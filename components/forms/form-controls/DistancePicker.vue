@@ -139,20 +139,15 @@
 </template>
 
 <script lang="ts">
-import { Component, Watch, Mixins, Prop } from 'vue-property-decorator';
+import { Component, Watch, Vue, Prop } from 'vue-property-decorator';
 import { VAutocomplete } from 'vuetify/lib';
 import parseUnit from 'parse-unit';
-import FormCustomDistanceDialog from '../FormCustomDistanceDialog.vue';
-import ValueDisplay from './ValueDisplay.vue';
-import StoreAccessorMixin from '~/mixins/store-accessor.ts';
 import { RunningEvent } from '~/utils/types';
 import { isValidUnit } from '~/utils/unit-system.ts';
 import { Measure } from '~/utils/types.ts';
 
-@Component({
-    components: { ValueDisplay, FormCustomDistanceDialog }
-})
-export default class DistancePicker extends Mixins(StoreAccessorMixin) {
+@Component
+export default class DistancePicker extends Vue {
     @Prop({ default: '' }) readonly value: string | undefined;
 
     $refs!: {
@@ -197,11 +192,11 @@ export default class DistancePicker extends Mixins(StoreAccessorMixin) {
     }
 
     get distancesList() {
-        return this.runningEventStore.events;
+        return this.$runningEventStore.events;
     }
 
     get distanceDisplay() {
-        const distance = this.runningEventStore.getEventById(this.distance);
+        const distance = this.$runningEventStore.getEventById(this.distance);
 
         if (distance) {
             return `${distance.value} ${distance.unit}`;
@@ -297,7 +292,7 @@ export default class DistancePicker extends Mixins(StoreAccessorMixin) {
 
     editDistance(distance: RunningEvent) {
         this.distanceToEdit = {
-            ...this.runningEventStore.getEventById(distance.id)
+            ...this.$runningEventStore.getEventById(distance.id)
         } as RunningEvent;
         this.openCustomDistanceDialog();
     }
@@ -307,7 +302,7 @@ export default class DistancePicker extends Mixins(StoreAccessorMixin) {
             this.distance = undefined;
         }
 
-        const event = this.runningEventStore.getEventById(
+        const event = this.$runningEventStore.getEventById(
             this.distanceToDelete
         );
 
@@ -315,7 +310,7 @@ export default class DistancePicker extends Mixins(StoreAccessorMixin) {
             return;
         }
 
-        this.runningEventStore.delete(event);
+        this.$runningEventStore.delete(event);
 
         this.confirmDeletion = false;
         this.distanceToDelete = undefined;

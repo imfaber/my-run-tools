@@ -10,11 +10,5 @@
 </template>
 
 <script>
-import ToolSelector from '~/components/ToolSelector.vue';
-
-export default {
-    components: {
-        ToolSelector
-    }
-};
+export default {};
 </script>

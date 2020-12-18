@@ -22,10 +22,6 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator';
-import TimePicker from '~/components/forms/form-controls/TimePicker.vue';
-import NumberPicker from '~/components/forms/form-controls/NumberPicker.vue';
-import ToolWidget from '~/components/ToolWidget.vue';
-import ToolSection from '~/components/ToolSection.vue';
 import ToolMixin from '~/mixins/tool';
 import { convertLength } from '~/utils/unit-system';
 
@@ -45,14 +41,7 @@ interface Widget {
     max: number;
 }
 
-@Component({
-    components: {
-        TimePicker,
-        NumberPicker,
-        ToolSection,
-        ToolWidget
-    }
-})
+@Component
 export default class PaceTimeCalculator extends Mixins(ToolMixin) {
     widgets = [
         {

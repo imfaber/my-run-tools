@@ -1,5 +1,4 @@
-import { Component, Mixins } from 'vue-property-decorator';
-import StoreAccessorMixin from './store-accessor';
+import { Component, Vue } from 'vue-property-decorator';
 import toolsData from '~/data/tools.ts';
 import { UnitSystem } from '~/utils/types.ts';
 
@@ -14,9 +13,9 @@ import { UnitSystem } from '~/utils/types.ts';
         };
     }
 })
-export default class ToolMixin extends Mixins(StoreAccessorMixin) {
+export default class ToolMixin extends Vue {
     get unitSystem(): UnitSystem {
-        return this.$store.state.settings.unitSystem;
+        return this.$settingsStore.unitSystem;
     }
 
     get isMetricSystem() {
