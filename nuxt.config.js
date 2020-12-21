@@ -1,6 +1,8 @@
 import colors from 'vuetify/es5/util/colors';
 
 const title = 'MyRun.Tools';
+const isProd = process.env.NODE_ENV === 'production';
+const isDev = !isProd;
 
 export default {
     components: true,
@@ -46,7 +48,8 @@ export default {
      */
     plugins: [
         { src: '~/plugins/vuex-persist', ssr: false },
-        { src: '~/plugins/store-accessor' }
+        { src: '~/plugins/gtm', ssr: false },
+        '~/plugins/store-accessor'
     ],
     /*
      ** Nuxt.js dev-modules
@@ -61,12 +64,96 @@ export default {
      ** Nuxt.js modules
      */
     modules: [
-        '@nuxtjs/pwa'
+        '@nuxtjs/pwa',
+        '@nuxtjs/gtm',
         // Doc: https://axios.nuxtjs.org/usage
         // '@nuxtjs/axios',
         // Doc: https://github.com/nuxt-community/dotenv-module
         // '@nuxtjs/dotenv'
+        [
+            'nuxt-cookie-control',
+            {
+                cssPolyfill: true,
+                controlButton: false,
+                blockIframe: true,
+                barPosition: 'bottom-right',
+                colors: {
+                    barTextColor: '#fff',
+                    modalOverlay: '#000',
+                    barBackground: '#2196F3',
+                    barButtonColor: '#000',
+                    modalTextColor: '#000',
+                    modalBackground: '#fff',
+                    modalOverlayOpacity: 0.8,
+                    modalButtonColor: '#fff',
+                    modalUnsavedColor: '#fff',
+                    barButtonHoverColor: '#fff',
+                    barButtonBackground: '#fff',
+                    modalButtonHoverColor: '#fff',
+                    modalButtonBackground: '#2196F3',
+                    controlButtonIconColor: '#000',
+                    controlButtonBackground: '#fff',
+                    barButtonHoverBackground: '#333',
+                    checkboxActiveBackground: '#2196F3',
+                    checkboxInactiveBackground: '#aadaff',
+                    modalButtonHoverBackground: '#329ef4',
+                    checkboxDisabledBackground: '#ddd',
+                    controlButtonIconHoverColor: '#fff',
+                    controlButtonHoverBackground: '#000',
+                    checkboxActiveCircleBackground: '#fff',
+                    checkboxInactiveCircleBackground: '#fff',
+                    checkboxDisabledCircleBackground: '#fff'
+                },
+                text: {
+                    barTitle: 'Cookies',
+                    barDescription:
+                        'We use our own cookies and third-party cookies so that we can show you this website and better understand how you use it, with a view to improving the services we offer.',
+                    acceptAll: 'Accept all',
+                    declineAll: 'Delete all',
+                    manageCookies: 'Manage cookies',
+                    unsaved: 'You have unsaved settings',
+                    close: 'Close',
+                    save: 'Save',
+                    necessary: 'Necessary cookies',
+                    optional: 'Optional cookies',
+                    functional: 'Functional cookies',
+                    blockedIframe:
+                        'To see this, please enable functional cookies',
+                    here: 'here'
+                }
+            }
+        ]
     ],
+    cookies: {
+        necessary: [
+            {
+                name: 'Default Cookies',
+                description: 'Used for cookie control.',
+                cookies: [
+                    'cookie_control_consent',
+                    'cookie_control_enabled_cookies'
+                ]
+            }
+        ],
+        optional: [
+            {
+                name: 'Google Analitycs',
+                identifier: 'ga',
+                description:
+                    'Google Analitycs is used to generate statistical data on how the visitor uses the website.',
+                initialState: true,
+                async: true,
+                cookies: ['_ga', '_gat', '_gid'],
+                accepted: () => window.$nuxt.$gtm.init(process.env.GTM_KEY),
+                declined: () => {}
+            }
+        ]
+    },
+    gtm: {
+        debug: isDev,
+        pageTracking: true,
+        enabled: isProd
+    },
     /*
      ** Axios module configuration
      ** See https://axios.nuxtjs.org/options
