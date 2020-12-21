@@ -103,6 +103,8 @@
                     <a href="https://imfaber.me/" target="_blank">Imfaber</a>
                 </small>
             </div>
+
+            <CookieControl />
         </VMain>
     </VApp>
 </template>
