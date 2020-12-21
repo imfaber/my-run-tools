@@ -1,6 +1,7 @@
 import colors from 'vuetify/es5/util/colors';
 
 const title = 'MyRun.Tools';
+const gtmKey = process.env.GTM_KEY;
 const isProd = process.env.NODE_ENV === 'production';
 const isDev = !isProd;
 
@@ -143,7 +144,7 @@ export default {
                 initialState: true,
                 async: true,
                 cookies: ['_ga', '_gat', '_gid'],
-                accepted: () => window.$nuxt.$gtm.init(process.env.GTM_KEY),
+                accepted: () => window.$nuxt.$gtm.init(gtmKey),
                 declined: () => {}
             }
         ]
