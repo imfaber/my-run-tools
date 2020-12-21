@@ -48,7 +48,6 @@ export default {
      */
     plugins: [
         { src: '~/plugins/vuex-persist', ssr: false },
-        { src: '~/plugins/gtm', ssr: false },
         '~/plugins/store-accessor'
     ],
     /*
